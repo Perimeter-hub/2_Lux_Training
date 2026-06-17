@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Lëtzebuergesch Snell!</title>
+<style>
+:root{--g:#C4282C;--gd:#8B1A1E;--gl:#FAEBEC;--pu:#7F77DD;--pl:#EEEDFE;--or:#E8722A;--ol:#FAECE7;--am:#EF9F27;--aml:#FAEEDA;--bl:#1D6EA8;--bll:#E6F1FB;--gr:#1D9E75;--grl:#E1F5EE;--bdr:#E0E0E0;--txt:#1A1A1A;--txt2:#666;--bg:#F4F6F8;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--txt);max-width:480px;margin:0 auto;min-height:100vh}
+#topbar{background:var(--g);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:200}
+#topbar h1{font-size:16px;font-weight:800}
+#topbar .lv{font-size:11px;background:rgba(255,255,255,.2);padding:3px 8px;border-radius:20px}
+#main{padding-top:52px;padding-bottom:68px}
+.page{display:none}
+.page.on{display:block}
+#nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid var(--bdr);display:flex;z-index:200}
+.nb{flex:1;border:none;background:none;padding:9px 2px 7px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--txt2)}
+.nb-i{font-size:20px}
+.nb-l{font-size:10px;font-weight:600}
+.nb.on{color:var(--g)}
+/* home */
+.hero{background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;margin:12px;border-radius:var(--r);padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.hero h2{font-size:17px;font-weight:800}
+.hero p{font-size:12px;opacity:.85;margin-top:3px}
+.hero-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:6px 13px;border-radius:20px;font-size:12px;cursor:pointer;flex-shrink:0;margin-left:10px}
+.exam-cta{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);margin:0 12px 12px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.exam-cta h3{font-size:13px;font-weight:800}
+.exam-cta p{font-size:11px;color:var(--txt2);margin-top:2px}
+.exam-ns{display:flex;gap:12px}
+.ens{text-align:center}
+.ens .en{font-size:18px;font-weight:800}
+.ens .el{font-size:10px;color:var(--txt2)}
+.ens.p .en{color:var(--gr)}
+.ens.f .en{color:var(--g)}
+#lg{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 8px}
+.lc{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:12px;cursor:pointer;position:relative}
+.lc.f1{border-left:4px solid var(--am)}
+.lc.chess{border-left:4px solid var(--pu)}
+.lc.done{background:#E8F8F0;border-color:var(--gr)}
+.lc-lv{font-size:10px;font-weight:700;color:var(--txt2)}
+.lc-ic{font-size:24px;margin:5px 0 3px}
+.lc-nm{font-size:13px;font-weight:800;line-height:1.3}
+.lc-sb{font-size:11px;color:var(--txt2);margin-top:2px}
+.lc-tg{font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;display:inline-block;margin-top:4px}
+.lc-tg.f1{background:var(--aml);color:#7A4500}
+.lc-tg.chess{background:var(--pl);color:#3C3489}
+.lc-ck{position:absolute;top:8px;right:8px;font-size:14px}
+/* lesson dialog */
+.phdr{padding:12px 16px 0}
+.phdr h2{font-size:15px;font-weight:800}
+.tip{background:var(--bll);border-radius:10px;padding:9px 12px;margin:8px 12px;font-size:12px;color:var(--bl)}
+.tabs{display:flex;margin:0 12px 10px;background:var(--bg);border-radius:24px;padding:3px;gap:3px}
+.tab{flex:1;border:none;background:none;padding:7px;border-radius:20px;font-size:13px;font-weight:600;color:var(--txt2);cursor:pointer}
+.tab.on{background:#fff;color:var(--txt)}
+.dlgwrap{padding:0 12px}
+.dc{background:#fff;border-radius:var(--r);margin-bottom:10px;padding:12px 13px;border:1px solid var(--bdr)}
+.dc-hd{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:13px;flex-shrink:0}
+.av.L{background:linear-gradient(135deg,#C4282C,#8B1A1E)}
+.av.A{background:linear-gradient(135deg,#E8722A,#B84E18)}
+.av.J{background:linear-gradient(135deg,#7F77DD,#534AB7)}
+.dc-sp{font-size:11px;font-weight:700;color:var(--txt2)}
+.dc-lb{font-size:14px;font-weight:700;line-height:1.4;margin-bottom:3px}
+.dc-ph{font-size:11px;color:var(--txt2);font-style:italic;margin-bottom:3px}
+.dc-en{font-size:12px;color:var(--txt2);margin-bottom:8px}
+.dc-bt{display:flex;flex-wrap:wrap;gap:5px}
+.bp{border:none;border-radius:16px;font-size:12px;font-weight:700;padding:5px 10px;cursor:pointer}
+.bp.L{background:var(--gl);color:var(--gd)}
+.bp.A{background:var(--ol);color:#7A3000}
+.bp.J{background:var(--pl);color:#3C3489}
+.bspd{background:var(--bg);border:1px solid var(--bdr);border-radius:14px;font-size:11px;padding:4px 8px;cursor:pointer;font-weight:600;color:var(--txt2)}
+.bspd.on{background:var(--g);color:#fff;border-color:var(--g)}
+.bmic{background:var(--bg);border:1px solid var(--bdr);border-radius:14px;font-size:11px;padding:4px 9px;cursor:pointer;font-weight:600}
+.sply{background:var(--bg);border-radius:10px;padding:9px 11px;margin-top:7px;border:1px solid var(--bdr)}
+.sply-l{font-size:11px;color:var(--txt2);margin-bottom:5px}
+.sply-r{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.spl-p{background:var(--txt);color:#fff;border:none;border-radius:50%;width:26px;height:26px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.spl-w{display:flex;align-items:center;gap:2px;height:18px}
+.spl-w span{display:block;width:3px;background:var(--g);border-radius:2px;animation:wv .8s ease-in-out infinite}
+@keyframes wv{0%,100%{height:3px}50%{height:14px}}
+.sply-c{display:flex;gap:7px;align-items:center}
+.cmp-l{background:var(--gl);color:var(--gd);border:none;border-radius:12px;font-size:11px;font-weight:700;padding:4px 9px;cursor:pointer}
+.cmp-m{background:var(--ol);color:#7A3000;border:none;border-radius:12px;font-size:11px;font-weight:700;padding:4px 9px;cursor:pointer}
+.cmp-h{font-size:11px;color:var(--txt2)}
+.lc-done{background:var(--grl);border:1px solid var(--gr);border-radius:var(--r);margin:12px;padding:14px 16px;text-align:center;display:none}
+.lc-done h3{font-size:14px;font-weight:800;color:var(--gr)}
+.btn-nxt{background:var(--g);color:#fff;border:none;border-radius:20px;padding:9px 22px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px}
+/* words */
+#wg{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px}
+.wc{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:12px;cursor:pointer;text-align:center}
+.wc-ic{font-size:26px;margin-bottom:5px}
+.wc-lb{font-size:13px;font-weight:800;color:var(--g)}
+.wc-ph{font-size:10px;color:var(--txt2);font-style:italic;margin:2px 0}
+.wc-en{font-size:11px;color:var(--txt)}
+/* exercises */
+#ew{padding:0 12px}
+.ec{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:12px;padding:14px}
+.ec-n{font-size:10px;font-weight:700;color:var(--txt2);letter-spacing:.5px;margin-bottom:7px}
+.ec-q{font-size:13px;font-weight:700;line-height:1.5;margin-bottom:12px}
+.eopts{display:flex;flex-direction:column;gap:7px}
+.eopt{border:1.5px solid var(--bdr);border-radius:10px;padding:10px 13px;font-size:13px;cursor:pointer;text-align:left;background:#fff;font-weight:500}
+.eopt.ok{background:#E8F8F0;border-color:var(--gr);color:#0a6040;pointer-events:none}
+.eopt.no{background:#FAEBEC;border-color:var(--g);color:var(--gd);pointer-events:none}
+.eopt.show-ok{background:#E8F8F0;border-color:var(--gr);color:#0a6040;pointer-events:none}
+.eopt.used{pointer-events:none}
+.efb{border-radius:10px;padding:10px 12px;margin-top:9px;font-size:12px;line-height:1.5}
+.efb.ok{background:#E8F8F0;color:#0a6040}
+.efb.no{background:#FAEBEC;color:var(--gd)}
+.eexp{background:var(--bll);border-radius:10px;padding:9px 12px;margin-top:7px;font-size:11px;color:var(--bl)}
+/* exam */
+.epbar{background:var(--bg);height:6px;border-radius:3px;margin:0 12px 12px;overflow:hidden}
+.epfill{height:100%;background:var(--g);border-radius:3px;transition:width .3s}
+.eqc{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);margin:0 12px 12px;padding:14px}
+.eqt{font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;margin-bottom:7px}
+.eqt.listen{color:var(--bl)}.eqt.vocab{color:var(--or)}.eqt.grammar{color:var(--pu)}
+.eqq{font-size:13px;font-weight:700;line-height:1.5;margin-bottom:7px}
+.eqh{background:var(--bg);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--txt2);margin-bottom:12px}
+.eqab{background:var(--bll);color:var(--bl);border:none;border-radius:18px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:12px;display:inline-block}
+.eres{background:#fff;border-radius:var(--r);margin:12px;padding:22px 18px;text-align:center;border:1px solid var(--bdr)}
+.eres-em{font-size:52px;margin-bottom:10px}
+.eres h2{font-size:20px;font-weight:800;margin-bottom:8px}
+.eres .sc{font-size:38px;font-weight:900;margin:10px 0 5px}
+.eres .sc.p{color:var(--gr)}.eres .sc.f{color:var(--g)}
+.eres p{font-size:13px;color:var(--txt2);margin-bottom:14px}
+.btn-try{background:var(--g);color:#fff;border:none;border-radius:20px;padding:10px 26px;font-size:13px;font-weight:700;cursor:pointer}
+/* progress */
+.pstats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 12px}
+.pst{background:#fff;border-radius:var(--r);border:1px solid var(--bdr);padding:12px;text-align:center}
+.pst .pn{font-size:26px;font-weight:900;color:var(--g)}
+.pst .pl{font-size:11px;color:var(--txt2);margin-top:3px}
+.peb{background:#fff;border-radius:var(--r);border:1px solid var(--bdr);margin:0 12px 12px;padding:13px 15px}
+.peb h3{font-size:13px;font-weight:800;margin-bottom:9px}
+.per{display:flex;justify-content:space-around}
+.pei{text-align:center}
+.pei .en{font-size:20px;font-weight:800}
+.pei .en.p{color:var(--gr)}.pei .en.f{color:var(--g)}.pei .en.b{color:var(--bl)}
+.pei .el{font-size:10px;color:var(--txt2);margin-top:2px}
+.pll{padding:0 12px}
+.pll h3{font-size:12px;font-weight:800;color:var(--txt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px}
+.pli{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;border:1px solid var(--bdr);padding:9px 12px;margin-bottom:7px}
+.pli-t{font-size:12px;font-weight:600}
+.pli-s{font-size:10px;color:var(--txt2);margin-top:1px}
+.bdg{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px}
+.bdg.done{background:var(--grl);color:#0a6040}
+.bdg.now{background:var(--gl);color:var(--gd)}
+.bdg.soon{background:var(--bg);color:var(--txt2)}
+/* about */
+.ab-in{padding:16px}
+.ab-hd{text-align:center;padding:12px 0 18px}
+.ab-hd .ai{font-size:36px}
+.ab-hd h2{font-size:19px;font-weight:900;margin-top:6px}
+.ab-hd p{font-size:12px;color:var(--txt2);margin-top:5px}
+.ch-row{display:flex;gap:8px;margin-bottom:14px}
+.ch-c{flex:1;background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:12px;text-align:center}
+.ch-av{width:44px;height:44px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff}
+.ch-av.L{background:linear-gradient(135deg,#C4282C,#8B1A1E)}
+.ch-av.A{background:linear-gradient(135deg,#E8722A,#B84E18)}
+.ch-av.J{background:linear-gradient(135deg,#7F77DD,#534AB7)}
+.ch-nm{font-size:12px;font-weight:800}
+.ch-ds{font-size:10px;color:var(--txt2);margin-top:2px}
+.ib{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:13px 15px;margin-bottom:12px}
+.ib h3{font-size:13px;font-weight:800;margin-bottom:9px}
+.ir{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--bg)}
+.ir:last-child{border-bottom:none}
+.ir-ic{font-size:20px}
+.ir-t{font-size:12px;font-weight:600}
+.ir-s{font-size:10px;color:var(--txt2)}
+.btn-back{display:block;width:100%;background:var(--g);color:#fff;border:none;border-radius:20px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;margin-top:4px}
+/* voice modal */
+#vm{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);align-items:flex-end;justify-content:center}
+#vm.show{display:flex}
+.vmb{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 30px;width:100%;max-width:480px}
+.vmb h3{font-size:16px;font-weight:800;margin-bottom:7px}
+.vmb p{font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:14px}
+.vmbr{display:flex;gap:9px}
+.vms{flex:1;background:var(--g);color:#fff;border:none;border-radius:20px;padding:11px;font-size:13px;font-weight:700;cursor:pointer}
+.vmsk{flex:1;background:var(--bg);color:var(--txt2);border:1px solid var(--bdr);border-radius:20px;padding:11px;font-size:13px;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>🇱🇺 Lëtzebuergesch Snell!</h1>
+  <span class="lv" id="tlv">A1 · 25 lessons</span>
+</div>
+
+<div id="main">
+  <div class="page on" id="pg-home">
+    <div class="hero">
+      <div><h2>Moien! 🇱🇺</h2><p>25 lessons · Sproochentest prep</p></div>
+      <button class="hero-btn" onclick="showPage('about');document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on')});">About</button>
+    </div>
+    <div class="exam-cta" onclick="startExam();showPage('exam');setNav('exam');">
+      <div><h3>📝 Model Exam</h3><p>Sproochentest · 10 questions · pass 70%</p></div>
+      <div class="exam-ns">
+        <div class="ens p"><div class="en" id="h-pass">0</div><div class="el">Passed ✅</div></div>
+        <div class="ens f"><div class="en" id="h-fail">0</div><div class="el">Failed ❌</div></div>
+      </div>
+    </div>
+    <div id="lg" onclick="lgClick(event)"></div>
+  </div>
+
+  <div class="page" id="pg-lesson">
+    <div class="phdr"><h2 id="l-title">Lesson</h2></div>
+    <div class="tip">💡 Practise with Léon first, then try John's A2 dialog. Tap 🎤 to record yourself!</div>
+    <div class="tabs">
+      <button class="tab on" id="tab-a" onclick="switchDlg('sd')">👤 Andrey</button>
+      <button class="tab" id="tab-j" onclick="switchDlg('jd')">🧑 John A2</button>
+    </div>
+    <div class="dlgwrap" id="dlgwrap"></div>
+    <div class="lc-done" id="lc-done">
+      <h3>✅ Lesson complete!</h3>
+      <br>
+      <button class="btn-nxt" id="btn-next" onclick="nextLesson()">Next lesson →</button>
+    </div>
+    <div style="height:14px"></div>
+  </div>
+
+  <div class="page" id="pg-words">
+    <div class="phdr" style="padding-bottom:10px"><h2 id="w-title">Words</h2></div>
+    <div id="wg"></div>
+    <div style="height:14px"></div>
+  </div>
+
+  <div class="page" id="pg-ex">
+    <div class="phdr" style="padding-bottom:10px"><h2 id="ex-title">Exercises</h2></div>
+    <div id="ew"></div>
+  </div>
+
+  <div class="page" id="pg-exam">
+    <div class="phdr" style="padding-bottom:10px"><h2>📝 Model Exam</h2></div>
+    <div id="exam-wrap"></div>
+  </div>
+
+  <div class="page" id="pg-prog">
+    <div class="phdr" style="padding-bottom:10px"><h2>📊 My Progress</h2></div>
+    <div class="pstats">
+      <div class="pst"><div class="pn" id="pr-done">0</div><div class="pl">Lessons done</div></div>
+      <div class="pst"><div class="pn" id="pr-words">0</div><div class="pl">Words learned</div></div>
+    </div>
+    <div class="peb">
+      <h3>Exam stats</h3>
+      <div class="per">
+        <div class="pei"><div class="en p" id="pr-pass">0</div><div class="el">Passed ✅</div></div>
+        <div class="pei"><div class="en f" id="pr-fail">0</div><div class="el">Failed ❌</div></div>
+        <div class="pei"><div class="en b" id="pr-pct">—</div><div class="el">Success %</div></div>
+      </div>
+    </div>
+    <div class="pll"><h3>All lessons</h3><div id="pr-list"></div></div>
+    <div style="height:14px"></div>
+  </div>
+
+  <div class="page" id="pg-about">
+    <div class="ab-in">
+      <div class="ab-hd">
+        <div class="ai">🇱🇺</div>
+        <h2>Lëtzebuergesch Snell!</h2>
+        <p>ОПЯТЬ 25! ® — Languages for Life<br>25 lessons A1 · Sproochentest prep</p>
+      </div>
+      <div class="ch-row">
+        <div class="ch-c"><div class="ch-av L">L</div><div class="ch-nm">Léon</div><div class="ch-ds">Native teacher</div></div>
+        <div class="ch-c"><div class="ch-av A">A</div><div class="ch-nm">Andrey</div><div class="ch-ds">You · A1</div></div>
+        <div class="ch-c"><div class="ch-av J">J</div><div class="ch-nm">John</div><div class="ch-ds">Target · A2</div></div>
+      </div>
+      <div class="ib">
+        <h3>Your interests</h3>
+        <div class="ir"><span class="ir-ic">🏎️</span><div><div class="ir-t">Formula 1</div><div class="ir-s">Lessons 8 and 25 — at the bistro watching the race</div></div></div>
+        <div class="ir"><span class="ir-ic">♟️</span><div><div class="ir-t">Chess</div><div class="ir-s">Lessons 11 and 24 — Schachclub Lëtzebuerg</div></div></div>
+      </div>
+      <div class="ib">
+        <h3>Goal: Sproochentest</h3>
+        <div class="ir"><span class="ir-ic">🏅</span><div><div class="ir-t">Luxembourg citizenship</div><div class="ir-s">Pass the official language exam at A1 level</div></div></div>
+        <div class="ir"><span class="ir-ic">🎤</span><div><div class="ir-t">Speaking practice</div><div class="ir-s">Record yourself and compare with Léon</div></div></div>
+      </div>
+      <button class="btn-back" onclick="goHome()">← Back to lessons</button>
+    </div>
+  </div>
+</div>
+
+<div id="nav">
+  <button class="nb on" id="nb-home" onclick="goHome()"><span class="nb-i">🏠</span><span class="nb-l">Lessons</span></button>
+  <button class="nb" id="nb-lesson" onclick="if(curLesson){showPage('lesson');setNav('lesson');}else{goHome();}"><span class="nb-i">💬</span><span class="nb-l">Dialog</span></button>
+  <button class="nb" id="nb-words" onclick="if(curLesson){buildWords();showPage('words');setNav('words');}else{goHome();}"><span class="nb-i">📖</span><span class="nb-l">Words</span></button>
+  <button class="nb" id="nb-ex" onclick="if(curLesson){buildExercises();showPage('ex');setNav('ex');}else{goHome();}"><span class="nb-i">✏️</span><span class="nb-l">Exercises</span></button>
+  <button class="nb" id="nb-exam" onclick="startExam();showPage('exam');setNav('exam');"><span class="nb-i">📝</span><span class="nb-l">Exam</span></button>
+  <button class="nb" id="nb-prog" onclick="buildProgress();showPage('prog');setNav('prog');"><span class="nb-i">📊</span><span class="nb-l">Progress</span></button>
+</div>
+
+<div id="vm">
+  <div class="vmb">
+    <h3>🔊 Voice setup</h3>
+    <p>Luxembourgish TTS uses German (de-DE) voice — the closest available. Works best in Chrome.</p>
+    <div class="vmbr">
+      <button class="vms" onclick="document.getElementById('vm').classList.remove('show');try{localStorage.setItem('lux77voice','done');}catch(e){}">✅ Got it!</button>
+      <button class="vmsk" onclick="document.getElementById('vm').classList.remove('show');try{localStorage.setItem('lux77voice','skip');}catch(e){}">Skip</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var L = JSON.parse("[{\"id\":1,\"title\":\"Alfabet a kleng\",\"icon\":\"🔤\",\"level\":\"A1\",\"ru_title\":\"Alphabet & sounds\",\"type\":\"normal\",\"words\":[{\"cz\":\"Moien\",\"ru\":\"Hello / Good morning\",\"ph\":\"[MOY-en]\",\"ic\":\"☀️\"},{\"cz\":\"Äddi\",\"ru\":\"Goodbye\",\"ph\":\"[AH-dee]\",\"ic\":\"👋\"},{\"cz\":\"Jo\",\"ru\":\"Yes\",\"ph\":\"[yo]\",\"ic\":\"✅\"},{\"cz\":\"Nee\",\"ru\":\"No\",\"ph\":\"[nay]\",\"ic\":\"❌\"},{\"cz\":\"Merci\",\"ru\":\"Thank you\",\"ph\":\"[MAIR-see]\",\"ic\":\"🙏\"},{\"cz\":\"Wann ech gelift\",\"ru\":\"Please\",\"ph\":\"[vann esh ge-LIFT]\",\"ic\":\"😊\"},{\"cz\":\"Entschëllegt\",\"ru\":\"Excuse me / Sorry\",\"ph\":\"[ent-SHILL-esht]\",\"ic\":\"🙇\"},{\"cz\":\"Lëtzebuerg\",\"ru\":\"Luxembourg\",\"ph\":\"[LET-tse-boork]\",\"ic\":\"🇱🇺\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Moien! Ech sinn Léon. Wéi heeschs du?\",\"ph\":\"[MOY-en! Esh zinn Lyohn. Vey hessh doo?]\",\"r\":\"Hello! I am Léon. What is your name?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien, Léon! Ech heeschen Andrey. Wéi geet et?\",\"ph\":\"[MOY-en, Lyohn! Esh HEY-shen Andrey. Vey gate et?]\",\"r\":\"Hello, Léon! My name is Andrey. How are you?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Et geet mir gutt, merci! A dir?\",\"ph\":\"[Et gate meer goot, MAIR-see! Ah deer?]\",\"r\":\"I am fine, thank you! And you?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Och mir geet et gutt. Merci!\",\"ph\":\"[Okh meer gate et goot. MAIR-see!]\",\"r\":\"I am fine too. Thank you!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Schéin. Äddi, Andrey!\",\"ph\":\"[Shayn. AH-dee, Andrey!]\",\"r\":\"Great. Goodbye, Andrey!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Äddi, Léon! Bis geschwënn!\",\"ph\":\"[AH-dee, Lyohn! Biss ge-SHVIN!]\",\"r\":\"Goodbye, Léon! See you soon!\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Moien, Léon! Wéi steet et mat der Sprooch haut?\",\"ph\":\"[MOY-en, Lyohn! Vey shtet et mat dair Shprokh howt?]\",\"r\":\"Good morning, Léon! How are things with language today?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Gutt, John! Mir üben haut den Alfabet a d'Begrëssungen.\",\"ph\":\"[Goot, John! Meer EE-ben howt den AHL-fa-bet ah d-be-GREE-soong-en.]\",\"r\":\"Good, John! Today we practise the alphabet and greetings.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Parfait! Ech brauch nach Iwwung mat den Umlauten.\",\"ph\":\"[Par-FAY! Esh browkh nakh EE-voong mat den OOM-low-ten.]\",\"r\":\"Perfect! I still need practice with the umlauts.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Kee Problem. Luuschteg Lëtzebuergesch ze léieren!\",\"ph\":\"[Kay Pro-BLAYM. LOOSH-tekh LET-tse-ber-gesh tse LAY-eren!]\",\"r\":\"No problem. Enjoy learning Luxembourgish!\"}],\"ex\":[{\"q\":\"How do you say 'Hello' in Luxembourgish?\",\"o\":[\"Hallo\",\"Moien\",\"Bonjour\",\"Guten Morgen\"],\"c\":1,\"ok\":\"Correct! Moien — the main Luxembourgish greeting.\",\"no\":\"No. Hello = Moien [MOY-en]\",\"exp\":\"Moien works morning, noon and evening!\"},{\"q\":\"What does 'Merci' mean?\",\"o\":[\"Please\",\"Sorry\",\"Thank you\",\"Goodbye\"],\"c\":2,\"ok\":\"Correct! Merci = Thank you — borrowed from French.\",\"no\":\"No. Merci = Thank you\",\"exp\":\"Luxembourg has three official languages: Luxembourgish, French, German.\"}]},{\"id\":2,\"title\":\"Virstellung — Kennenléiere\",\"icon\":\"🤝\",\"level\":\"A1\",\"ru_title\":\"Introductions\",\"type\":\"normal\",\"words\":[{\"cz\":\"Ech heeschen...\",\"ru\":\"My name is...\",\"ph\":\"[Esh HEY-shen]\",\"ic\":\"🙋\"},{\"cz\":\"Ech kommen aus...\",\"ru\":\"I come from...\",\"ph\":\"[Esh KOM-men ows]\",\"ic\":\"🌍\"},{\"cz\":\"Ech wunnen zu...\",\"ru\":\"I live in...\",\"ph\":\"[Esh VOON-en tsoo]\",\"ic\":\"🏠\"},{\"cz\":\"Ech schaffen als...\",\"ru\":\"I work as...\",\"ph\":\"[Esh SHAF-fen als]\",\"ic\":\"💼\"},{\"cz\":\"Wéi al sidd Dir?\",\"ru\":\"How old are you?\",\"ph\":\"[Vey ahl zitt deer?]\",\"ic\":\"🎂\"},{\"cz\":\"Ech si fofzeg Joer\",\"ru\":\"I am fifty years old\",\"ph\":\"[Esh zee FOF-tsekh yoar]\",\"ic\":\"🔢\"},{\"cz\":\"Schéinen Dag!\",\"ru\":\"Have a nice day!\",\"ph\":\"[SHAY-nen dahg]\",\"ic\":\"🌟\"},{\"cz\":\"Frou mech ze kennen\",\"ru\":\"Nice to meet you\",\"ph\":\"[Froo mesh tse KEN-nen]\",\"ic\":\"😄\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Moien! Ech si Léon. Wou kënnt Dir hier?\",\"ph\":\"[MOY-en! Esh zee Lyohn. Voo kent deer heer?]\",\"r\":\"Hello! I am Léon. Where do you come from?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien, Léon! Ech heeschen Andrey a kommen aus Russland.\",\"ph\":\"[MOY-en, Lyohn! Esh HEY-shen Andrey ah KOM-men ows ROOS-lant.]\",\"r\":\"Hello, Léon! My name is Andrey and I come from Russia.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"A wou wunnt Dir elo?\",\"ph\":\"[Ah voo voont deer EH-lo?]\",\"r\":\"And where do you live now?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech wunnen zu Lëtzebuerg. Ech schaffen hei.\",\"ph\":\"[Esh VOON-en tsoo LET-tse-boork. Esh SHAF-fen hey.]\",\"r\":\"I live in Luxembourg. I work here.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Wéi al sidd Dir?\",\"ph\":\"[Vey ahl zitt deer?]\",\"r\":\"How old are you?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech si fofzeg Joer al. A Dir, Léon?\",\"ph\":\"[Esh zee FOF-tsekh yoar ahl. Ah deer, Lyohn?]\",\"r\":\"I am fifty years old. And you, Léon?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Frou mech ze kennen, Andrey!\",\"ph\":\"[Froo mesh tse KEN-nen, Andrey!]\",\"r\":\"Nice to meet you, Andrey!\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Moien, Léon! Mir mussen haut Virstellunge üben.\",\"ph\":\"[MOY-en, Lyohn! Meer MOOS-sen howt VIR-shtel-oong-e EE-ben.]\",\"r\":\"Good morning, Léon! Today we need to practise introductions.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Natierlech, John. Stell dech mol vir wéi op engem Amt.\",\"ph\":\"[Nah-TEER-lekh, John. Shtel desh mol feer vey op EN-gem amt.]\",\"r\":\"Of course, John. Introduce yourself as if at a government office.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Ech heeschen John Miller. Ech kommen aus England an wunnen zu Lëtzebuerg zanter dräi Joer.\",\"ph\":\"[Esh HEY-shen John Miller. Esh KOM-men ows ENG-lant an VOON-en tsoo LET-tse-boork TSAN-ter dray yoar.]\",\"r\":\"My name is John Miller. I come from England and have been living in Luxembourg for three years.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Excellent! Dat ass genau richteg fir den Sproochentest.\",\"ph\":\"[Ekh-se-LANT! Dat ass ge-NOW RISH-tekh feer den SHPROH-khen-test.]\",\"r\":\"Excellent! That is exactly right for the Sproochentest.\"}],\"ex\":[{\"q\":\"How do you say 'My name is...' in Luxembourgish?\",\"o\":[\"Ech wunnen...\",\"Ech heeschen...\",\"Ech schaffen...\",\"Ech kommen...\"],\"c\":1,\"ok\":\"Correct! Ech heeschen = My name is\",\"no\":\"No. My name is = Ech heeschen\",\"exp\":\"Heeschen means to be called. Ech heeschen Andrey = I am called Andrey.\"},{\"q\":\"'Ech kommen aus Russland' means:\",\"o\":[\"I live in Russia\",\"I work in Russia\",\"I come from Russia\",\"I am visiting Russia\"],\"c\":2,\"ok\":\"Correct! Kommen aus = come from\",\"no\":\"No. Kommen aus = come from\",\"exp\":\"Aus indicates origin. Aus Russland = from Russia.\"}]},{\"id\":3,\"title\":\"Zuelen 1-20\",\"icon\":\"🔢\",\"level\":\"A1\",\"ru_title\":\"Numbers 1-20\",\"type\":\"normal\",\"words\":[{\"cz\":\"eent / eens\",\"ru\":\"one / one (counting)\",\"ph\":\"[aynt / ayns]\",\"ic\":\"1️⃣\"},{\"cz\":\"zwee\",\"ru\":\"two\",\"ph\":\"[tsvay]\",\"ic\":\"2️⃣\"},{\"cz\":\"dräi\",\"ru\":\"three\",\"ph\":\"[dray]\",\"ic\":\"3️⃣\"},{\"cz\":\"véier\",\"ru\":\"four\",\"ph\":\"[FAY-er]\",\"ic\":\"4️⃣\"},{\"cz\":\"fënnef\",\"ru\":\"five\",\"ph\":\"[FIN-nef]\",\"ic\":\"5️⃣\"},{\"cz\":\"sechs\",\"ru\":\"six\",\"ph\":\"[zekhs]\",\"ic\":\"6️⃣\"},{\"cz\":\"siwen\",\"ru\":\"seven\",\"ph\":\"[ZEE-ven]\",\"ic\":\"7️⃣\"},{\"cz\":\"aacht\",\"ru\":\"eight\",\"ph\":\"[ahkht]\",\"ic\":\"8️⃣\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Mir zielen haut vun eent bis zwanzeg. Eent, zwee, dräi...\",\"ph\":\"[Meer TSEE-len howt voon aynt biss TSVANTS-ekh. Aynt, tsvay, dray...]\",\"r\":\"Today we count from one to twenty. One, two, three...\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Véier, fënnef, sechs, siwen, aacht!\",\"ph\":\"[FAY-er, FIN-nef, zekhs, ZEE-ven, ahkht!]\",\"r\":\"Four, five, six, seven, eight!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Super! Weider: néng, zéng, eelef...\",\"ph\":\"[ZOO-per! VEY-der: neng, tseng, AY-lef...]\",\"r\":\"Super! Continue: nine, ten, eleven...\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Zwielef, dräizéng, véierzéng, fofzéng!\",\"ph\":\"[TSVEE-lef, DRAY-tseng, FAY-er-tseng, FOF-tseng!]\",\"r\":\"Twelve, thirteen, fourteen, fifteen!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Ausgezeichnet! A wéi vill ass dës Fläsch?\",\"ph\":\"[OWS-ge-tsaykh-net! Ah vey fill ass daze FLESH?]\",\"r\":\"Excellent! And how much is this bottle?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Dat ass zwanzeg Euro, mengen ech.\",\"ph\":\"[Dat ass TSVANTS-ekh OY-ro, MENG-en esh.]\",\"r\":\"That is twenty euros, I think.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech muss Zuelen am Alldag benotzen. Kann ech üben?\",\"ph\":\"[Lyohn, esh mooss TSOO-len am AHL-dahg be-NOOT-tsen. Kan esh EE-ben?]\",\"r\":\"Léon, I need to use numbers in daily life. Can I practise?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Natierlech! Soe mer déng Telefonsnummer.\",\"ph\":\"[Nah-TEER-lekh! Zo meer dayn te-le-FONS-noom-mer.]\",\"r\":\"Of course! Tell me your phone number.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Meng Nummer ass: Null, Véier, Siwen, Dräi, Sechs, Zwee, Eent, Néng.\",\"ph\":\"[Meng NOOM-mer ass: Nool, FAY-er, ZEE-ven, Dray, Zekhs, Tsvay, Aynt, Neng.]\",\"r\":\"My number is: 0, 4, 7, 3, 6, 2, 1, 9.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Perfekt! Zuelen sinn essentiel fir den Alldag.\",\"ph\":\"[Per-FEKT! TSOO-len zinn es-en-TSYEL feer den AHL-dahg.]\",\"r\":\"Perfect! Numbers are essential for daily life.\"}],\"ex\":[{\"q\":\"How do you say 'five' in Luxembourgish?\",\"o\":[\"fënnef\",\"fünf\",\"cinq\",\"vijf\"],\"c\":0,\"ok\":\"Correct! Fënnef = five.\",\"no\":\"No. Five = fënnef [FIN-nef]\",\"exp\":\"The e with umlaut in Luxembourgish is a unique vowel sound.\"},{\"q\":\"What number is 'aacht'?\",\"o\":[\"6\",\"7\",\"8\",\"9\"],\"c\":2,\"ok\":\"Correct! Aacht = eight [ahkht]\",\"no\":\"No. Aacht = 8\",\"exp\":\"Aacht sounds like German acht. The double a makes it longer.\"}]},{\"id\":4,\"title\":\"Am Café\",\"icon\":\"☕\",\"level\":\"A1\",\"ru_title\":\"At the café\",\"type\":\"normal\",\"words\":[{\"cz\":\"E Kaffi, wann ech gelift\",\"ru\":\"A coffee, please\",\"ph\":\"[E KAF-fee, vann esh ge-LIFT]\",\"ic\":\"☕\"},{\"cz\":\"E Waasser\",\"ru\":\"A water\",\"ph\":\"[E VAS-ser]\",\"ic\":\"💧\"},{\"cz\":\"E Croissant\",\"ru\":\"A croissant\",\"ph\":\"[E kroe-SAHN]\",\"ic\":\"🥐\"},{\"cz\":\"De Rechnung\",\"ru\":\"The bill\",\"ph\":\"[De REKH-noong]\",\"ic\":\"🧾\"},{\"cz\":\"Wéi vill mécht dat?\",\"ru\":\"How much is that?\",\"ph\":\"[Vey fill mesht dat?]\",\"ic\":\"💶\"},{\"cz\":\"Dat ass gutt!\",\"ru\":\"That is good!\",\"ph\":\"[Dat ass goot!]\",\"ic\":\"👍\"},{\"cz\":\"Huelt Dir Kaart?\",\"ru\":\"Do you take card?\",\"ph\":\"[Hoolt deer kart?]\",\"ic\":\"💳\"},{\"cz\":\"En Dësch fir zwee\",\"ru\":\"A table for two\",\"ph\":\"[En Desh feer tsvay]\",\"ic\":\"🪑\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien! E Kaffi a e Waasser, wann ech gelift.\",\"ph\":\"[MOY-en! E KAF-fee ah e VAS-ser, vann esh ge-LIFT.]\",\"r\":\"Good morning! A coffee and a water, please.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Natierlech! Wëllt Dir och eppes iessen?\",\"ph\":\"[Nah-TEER-lekh! Vellt deer okh EP-pes EES-sen?]\",\"r\":\"Of course! Would you like something to eat as well?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Jo, e Croissant, wann ech gelift. Wéi vill mécht dat?\",\"ph\":\"[Yo, e kroe-SAHN, vann esh ge-LIFT. Vey fill mesht dat?]\",\"r\":\"Yes, a croissant please. How much is that?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dat mécht aacht Euro a fofzeg Cent.\",\"ph\":\"[Dat mesht ahkht OY-ro ah FOF-tsekh Tsent.]\",\"r\":\"That is eight euros and fifty cents.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Huelt Dir Kaart?\",\"ph\":\"[Hoolt deer kart?]\",\"r\":\"Do you take card?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo, natierlech! Kee Problem.\",\"ph\":\"[Yo, nah-TEER-lekh! Kay Pro-BLAYM.]\",\"r\":\"Yes, of course! No problem.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Moien! Hätt Dir nach e fräien Dësch fir zwee?\",\"ph\":\"[MOY-en! Het deer nakh e FRAY-en Desh feer tsvay?]\",\"r\":\"Good morning! Do you still have a free table for two?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo, do hannert ass nach ee fräi. Wat dierft et sinn?\",\"ph\":\"[Yo, do HAN-nert ass nakh ay fray. Vat DEER-ft et zinn?]\",\"r\":\"Yes, there is one free at the back. What would you like?\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Ech hätt gäre e Latte Macchiato an e Stéck Kuchen.\",\"ph\":\"[Esh het GAIR-e e Latte Mak-YAH-to an e Shtekh KOO-khen.]\",\"r\":\"I would like a latte macchiato and a piece of cake.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Gär geschéien! Ee Moment, wannechgelift.\",\"ph\":\"[Gair ge-SHAY-en! Ay Mo-MENT, vann-esh-ge-LIFT.]\",\"r\":\"With pleasure! One moment, please.\"}],\"ex\":[{\"q\":\"How do you ask for the bill in Luxembourgish?\",\"o\":[\"De Rechnung, wann ech gelift\",\"E Kaffi, wann ech gelift\",\"Wéi vill mécht dat?\",\"Huelt Dir Kaart?\"],\"c\":0,\"ok\":\"Correct! De Rechnung = the bill\",\"no\":\"No. The bill = De Rechnung, wann ech gelift\",\"exp\":\"Rechnung comes from German. You can also say bezuelen (to pay).\"},{\"q\":\"'Wéi vill mécht dat?' means:\",\"o\":[\"Do you take card?\",\"How much is that?\",\"What would you like?\",\"Is it good?\"],\"c\":1,\"ok\":\"Correct! Wéi vill mécht dat = How much is that?\",\"no\":\"No. Wéi vill mécht dat = How much is that?\",\"exp\":\"Mécht comes from maachen (to make). Literally: How much does that make?\"}]},{\"id\":5,\"title\":\"Am Supermarché\",\"icon\":\"🛒\",\"level\":\"A1\",\"ru_title\":\"At the shop\",\"type\":\"normal\",\"words\":[{\"cz\":\"Brout\",\"ru\":\"Bread\",\"ph\":\"[broot]\",\"ic\":\"🍞\"},{\"cz\":\"Mëllech\",\"ru\":\"Milk\",\"ph\":\"[MEL-lekh]\",\"ic\":\"🥛\"},{\"cz\":\"Fleesch\",\"ru\":\"Meat\",\"ph\":\"[flaysh]\",\"ic\":\"🥩\"},{\"cz\":\"Geméis\",\"ru\":\"Vegetables\",\"ph\":\"[ge-MAYS]\",\"ic\":\"🥦\"},{\"cz\":\"Uebst\",\"ru\":\"Fruit\",\"ph\":\"[oobst]\",\"ic\":\"🍎\"},{\"cz\":\"Wou ass...?\",\"ru\":\"Where is...?\",\"ph\":\"[voo ass?]\",\"ic\":\"❓\"},{\"cz\":\"Ech sichen...\",\"ru\":\"I am looking for...\",\"ph\":\"[Esh ZEE-khen]\",\"ic\":\"🔍\"},{\"cz\":\"Zu deier\",\"ru\":\"Too expensive\",\"ph\":\"[tsoo DAY-er]\",\"ic\":\"💸\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Entschëllegt! Wou ass d'Brout?\",\"ph\":\"[Ent-SHILL-esht! Voo ass d-broot?]\",\"r\":\"Excuse me! Where is the bread?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"D'Brout ass do lénks, nieft der Mëllech.\",\"ph\":\"[D-broot ass do lenks, neeft dair MEL-lekh.]\",\"r\":\"The bread is there on the left, next to the milk.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Merci! A wou fannen ech Uebst?\",\"ph\":\"[MAIR-see! Ah voo FAN-nen esh oobst?]\",\"r\":\"Thank you! And where do I find fruit?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"D'Uebst ass am hënneschte Deel vum Geschäft.\",\"ph\":\"[D-oobst ass am HIN-nesh-te Dayl voom Ge-SHEFT.]\",\"r\":\"The fruit is at the back of the shop.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Dës Äppel sinn ze deier! Drësseg Cent pro Stéck?\",\"ph\":\"[Daze EP-pel zinn tse DAY-er! DRIS-sekh Tsent pro Shtekh?]\",\"r\":\"These apples are too expensive! Thirty cents each?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dat ass deen normale Präis am Auchan.\",\"ph\":\"[Dat ass dayn nor-MAH-le Pray-ss am OW-shan.]\",\"r\":\"That is the normal price at Auchan.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Ech sichen Bio-Geméis. Ass dat hei verfügbar?\",\"ph\":\"[Esh ZEE-khen BYO-ge-mays. Ass dat hey fer-FEEG-bar?]\",\"r\":\"I am looking for organic vegetables. Is that available here?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo, d'Bio-Produkter sinn am spezielle Rayon uewen.\",\"ph\":\"[Yo, d-BYO-pro-DOOK-ter zinn am shpe-TSYEL-e Ray-ON OO-en.]\",\"r\":\"Yes, the organic products are in the special section upstairs.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Super. A gëtt et hei Lëtzebuerger Produkter?\",\"ph\":\"[ZOO-per. Ah get et hey LET-tse-ber-ger pro-DOOK-ter?]\",\"r\":\"Great. And are there Luxembourgish products here?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo! D'Lëtzebuerger Wuerzer a Käse sinn excellent.\",\"ph\":\"[Yo! D-LET-tse-ber-ger VOOR-tser ah KAY-ze zinn ek-se-LANT.]\",\"r\":\"Yes! The Luxembourgish sausages and cheeses are excellent.\"}],\"ex\":[{\"q\":\"How do you say 'bread' in Luxembourgish?\",\"o\":[\"Brout\",\"Brot\",\"Pain\",\"Bread\"],\"c\":0,\"ok\":\"Correct! Brout = bread [broot]\",\"no\":\"No. Bread = Brout [broot]\",\"exp\":\"Brout is similar to German Brot. Luxembourg has wonderful local bread varieties!\"},{\"q\":\"'Ech sichen...' means:\",\"o\":[\"I buy...\",\"I eat...\",\"I am looking for...\",\"I need...\"],\"c\":2,\"ok\":\"Correct! Ech sichen = I am looking for\",\"no\":\"No. Ech sichen = I am looking for\",\"exp\":\"Sichen means to search or look for. Useful in shops, offices and at home!\"}]},{\"id\":6,\"title\":\"Transport zu Lëtzebuerg\",\"icon\":\"🚌\",\"level\":\"A1\",\"ru_title\":\"Transport in Luxembourg\",\"type\":\"normal\",\"words\":[{\"cz\":\"Bus / Tram / Zuch\",\"ru\":\"Bus / Tram / Train\",\"ph\":\"[boos / tram / tsookh]\",\"ic\":\"🚌\"},{\"cz\":\"Gratis!\",\"ru\":\"Free! (public transport)\",\"ph\":\"[GRAH-tees]\",\"ic\":\"🆓\"},{\"cz\":\"D'Arrêt\",\"ru\":\"The stop\",\"ph\":\"[dah-RAY]\",\"ic\":\"🚏\"},{\"cz\":\"Wann fiert...?\",\"ru\":\"When does... depart?\",\"ph\":\"[Vann feert?]\",\"ic\":\"⏰\"},{\"cz\":\"Ech muss ëmsteigen\",\"ru\":\"I have to change\",\"ph\":\"[Esh mooss EM-shtay-gen]\",\"ic\":\"🔄\"},{\"cz\":\"D'Gare\",\"ru\":\"The station\",\"ph\":\"[d-GAR]\",\"ic\":\"🚉\"},{\"cz\":\"Richtung\",\"ru\":\"Direction / towards\",\"ph\":\"[RISH-toong]\",\"ic\":\"➡️\"},{\"cz\":\"Einfach / Retour\",\"ru\":\"Single / Return\",\"ph\":\"[AYN-fakh / re-TOOR]\",\"ic\":\"🎫\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Entschëllegt, wéini fiert den nächste Bus Richtung Stater?\",\"ph\":\"[Ent-SHILL-esht, VAY-nee feert den NEKH-ste boos RISH-toong SHTAH-ter?]\",\"r\":\"Excuse me, when does the next bus towards the city centre depart?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Den 9er fiert an zéng Minutten. Den Arrêt ass do drënner.\",\"ph\":\"[Den NOY-er feert an tseng mi-NOOT-ten. Den ah-RAY ass do DRIN-ner.]\",\"r\":\"The number 9 leaves in ten minutes. The stop is just down there.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Wéi vill kascht de Ticket?\",\"ph\":\"[Vey fill kasht de ti-KET?]\",\"r\":\"How much does the ticket cost?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Den Transport ass gratis zu Lëtzebuerg! Kee Ticket néideg.\",\"ph\":\"[Den trans-PORT ass GRAH-tees tsoo LET-tse-boork! Kay ti-KET NAY-dekh.]\",\"r\":\"Transport is free in Luxembourg! No ticket needed.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Wierklech? Dat ass fantastisch!\",\"ph\":\"[VEER-klekh? Dat ass fan-TAS-tish!]\",\"r\":\"Really? That is fantastic!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo! Zanter 2020 ass all ëffentlecht Transport gratis.\",\"ph\":\"[Yo! TSAN-ter 2020 ass all EF-fent-lekht trans-PORT GRAH-tees.]\",\"r\":\"Yes! Since 2020 all public transport is free.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, wéi fuere ech am beschten vun Esch op Lëtzebuerg-Stad?\",\"ph\":\"[Lyohn, vey FOO-re esh am BESH-ten voon Esh op LET-tse-boork-Shtaht?]\",\"r\":\"Léon, what is the best way to travel from Esch to Luxembourg City?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Huel den Zuch vun Esch-sur-Alzette bis op d'Gare Centrale. Dat dauert 20 Minutten.\",\"ph\":\"[Hool den tsookh voon Esh-soor-Al-ZET biss op d-GAR Tsen-TRAL. Dat DOWERT tsvants-ekh mi-NOOT-ten.]\",\"r\":\"Take the train from Esch-sur-Alzette to the Central Station. That takes 20 minutes.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Muss ech ëmsteigen?\",\"ph\":\"[Mooss esh EM-shtay-gen?]\",\"r\":\"Do I have to change?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Nee, et ass direkt. A gratis, natierlech!\",\"ph\":\"[Nay, et ass dee-REKT. Ah GRAH-tees, nah-TEER-lekh!]\",\"r\":\"No, it is direct. And free, of course!\"}],\"ex\":[{\"q\":\"Public transport in Luxembourg is:\",\"o\":[\"Expensive\",\"Cheap\",\"Free\",\"Only for citizens\"],\"c\":2,\"ok\":\"Correct! Since 2020 all public transport in Luxembourg is free!\",\"no\":\"No. Public transport in Luxembourg is free since 2020!\",\"exp\":\"Luxembourg was the first country in the world to make all national public transport free (2020).\"},{\"q\":\"'D'Gare' means:\",\"o\":[\"The bus\",\"The stop\",\"The station\",\"The tram\"],\"c\":2,\"ok\":\"Correct! D'Gare = the station\",\"no\":\"No. D'Gare = the station (from French gare)\",\"exp\":\"Luxembourgish borrows many words from French. Gare, arrêt, café, merci — all French-origin words!\"}]},{\"id\":7,\"title\":\"Zäit a Woch\",\"icon\":\"🕐\",\"level\":\"A1\",\"ru_title\":\"Time & days\",\"type\":\"normal\",\"words\":[{\"cz\":\"Méindeg\",\"ru\":\"Monday\",\"ph\":\"[MAYN-dekh]\",\"ic\":\"1️⃣\"},{\"cz\":\"Dënschdeg\",\"ru\":\"Tuesday\",\"ph\":\"[DENSH-dekh]\",\"ic\":\"2️⃣\"},{\"cz\":\"Mëttwoch\",\"ru\":\"Wednesday\",\"ph\":\"[MET-vokh]\",\"ic\":\"3️⃣\"},{\"cz\":\"Donneschdeg\",\"ru\":\"Thursday\",\"ph\":\"[DON-nesh-dekh]\",\"ic\":\"4️⃣\"},{\"cz\":\"Freideg\",\"ru\":\"Friday\",\"ph\":\"[FRAY-dekh]\",\"ic\":\"5️⃣\"},{\"cz\":\"Samschdeg\",\"ru\":\"Saturday\",\"ph\":\"[ZAMSH-dekh]\",\"ic\":\"6️⃣\"},{\"cz\":\"Sonndeg\",\"ru\":\"Sunday\",\"ph\":\"[ZON-dekh]\",\"ic\":\"7️⃣\"},{\"cz\":\"Wéi spéit ass et?\",\"ru\":\"What time is it?\",\"ph\":\"[Vey shpayt ass et?]\",\"ic\":\"⌚\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Wéi spéit ass et, Léon?\",\"ph\":\"[Vey shpayt ass et, Lyohn?]\",\"r\":\"What time is it, Léon?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Et ass zéng Auer moies. Hues du haut vill ze doen?\",\"ph\":\"[Et ass tseng OW-er MOY-es. Hoos doo howt fill tse doen?]\",\"r\":\"It is ten o'clock in the morning. Do you have a lot to do today?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Jo! Ech schaffen bis fënnef. Dann ginn ech an de Schachclub.\",\"ph\":\"[Yo! Esh SHAF-fen biss FIN-nef. Dan ginn esh an de SHAKH-kloob.]\",\"r\":\"Yes! I work until five. Then I go to the chess club.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"A wéini? En Dënschdeg?\",\"ph\":\"[Ah VAY-nee? En DENSH-dekh?]\",\"r\":\"And when? On Tuesday?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Jo, all Dënschdeg an all Donneschdeg.\",\"ph\":\"[Yo, all DENSH-dekh an all DON-nesh-dekh.]\",\"r\":\"Yes, every Tuesday and every Thursday.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Super! A wat mécht Dir um Weekend?\",\"ph\":\"[ZOO-per! Ah vat mesht deer oom VEE-kend?]\",\"r\":\"Great! And what do you do at the weekend?\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech hu Schwieregkeeten mat den Uhrzäiten.\",\"ph\":\"[Lyohn, esh hoo SHVEE-rek-kayt-en mat den OOR-tsayt-en.]\",\"r\":\"Léon, I have difficulty with telling the time.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Kee Problem. Wéi spéit ass et elo?\",\"ph\":\"[Kay Pro-BLAYM. Vey shpayt ass et EH-lo?]\",\"r\":\"No problem. What time is it now?\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Et ass Véirel op eelef.\",\"ph\":\"[Et ass FAY-er-el op AY-lef.]\",\"r\":\"It is quarter past eleven.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Richteg! An hallwer zwielef?\",\"ph\":\"[RISH-tekh! An HAL-ver TSVEE-lef?]\",\"r\":\"Correct! And half past eleven?\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Hallwer zwielef — et ass hallef Mëtteg!\",\"ph\":\"[HAL-ver TSVEE-lef — et ass HAL-ef ME-tekh!]\",\"r\":\"Half past eleven — it is almost noon!\"}],\"ex\":[{\"q\":\"How do you say 'Friday' in Luxembourgish?\",\"o\":[\"Freideg\",\"Fredag\",\"Vendredi\",\"Freitag\"],\"c\":0,\"ok\":\"Correct! Freideg = Friday\",\"no\":\"No. Friday = Freideg [FRAY-dekh]\",\"exp\":\"The days in Luxembourgish are similar to German but with unique spellings.\"},{\"q\":\"'Wéi spéit ass et?' means:\",\"o\":[\"What day is it?\",\"What time is it?\",\"How long is it?\",\"When is it?\"],\"c\":1,\"ok\":\"Correct! Wéi spéit ass et? = What time is it?\",\"no\":\"No. Wéi spéit ass et? = What time is it?\",\"exp\":\"Spéit means late. How late is it? — a common Germanic way to ask the time.\"}]},{\"id\":8,\"title\":\"F1: Am Bistro bei der Course\",\"icon\":\"🏎️\",\"level\":\"A1\",\"ru_title\":\"F1: At the bar watching the race\",\"type\":\"f1\",\"words\":[{\"cz\":\"D'Course\",\"ru\":\"The race\",\"ph\":\"[d-KOORS]\",\"ic\":\"🏎️\"},{\"cz\":\"De Circuit\",\"ru\":\"The circuit\",\"ph\":\"[de sir-KWEE]\",\"ic\":\"🏁\"},{\"cz\":\"Eng Victoire\",\"ru\":\"A victory\",\"ph\":\"[eng vik-TWAAR]\",\"ic\":\"🏆\"},{\"cz\":\"De Pole Position\",\"ru\":\"Pole position\",\"ph\":\"[de pol po-ZEE-TSYON]\",\"ic\":\"🥇\"},{\"cz\":\"De Pit Stop\",\"ru\":\"The pit stop\",\"ph\":\"[de pit shtop]\",\"ic\":\"🔧\"},{\"cz\":\"Wann fänkt d'Course un?\",\"ru\":\"When does the race start?\",\"ph\":\"[Vann fenkt d-KOORS oon?]\",\"ic\":\"⏱️\"},{\"cz\":\"Ech frou mech op d'Course!\",\"ru\":\"I am excited about the race!\",\"ph\":\"[Esh froo mesh op d-KOORS!]\",\"ic\":\"😃\"},{\"cz\":\"Deen ass schnell!\",\"ru\":\"He is fast!\",\"ph\":\"[Dayn ass shnell!]\",\"ic\":\"💨\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien, Léon! Wann fänkt d'Course un haut?\",\"ph\":\"[MOY-en, Lyohn! Vann fenkt d-KOORS oon howt?]\",\"r\":\"Morning, Léon! When does the race start today?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Moien, Andrey! D'Course fänkt um véierzéng Auer un. Den GP vu Monaco!\",\"ph\":\"[MOY-en, Andrey! D-KOORS fenkt oom FAY-er-tseng OW-er oon. Den Gay-Pay voo Mo-NAH-ko!]\",\"r\":\"Morning, Andrey! The race starts at two o'clock. The Monaco GP!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Monaco! Meng Lieblingsstrecke! Ee Bier, wann ech gelift!\",\"ph\":\"[Mo-NAH-ko! Meng LEEB-ling-shtrek-e! Ay beer, vann esh ge-LIFT!]\",\"r\":\"Monaco! My favourite circuit! One beer, please!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Kuckt! Pole Position ass haut Verstappen!\",\"ph\":\"[Kookt! Pol po-ZEE-tsyon ass howt Fersh-TAP-pen!]\",\"r\":\"Look! Pole position today is Verstappen!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Fantastisch! Ech frou mech op déi Course!\",\"ph\":\"[Fan-TAS-tish! Esh froo mesh op day KOORS!]\",\"r\":\"Fantastic! I am so excited about this race!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"A wann hie gewënnt — wat soe mir dann?\",\"ph\":\"[Ah vann hee ge-VINT — vat zo meer dan?]\",\"r\":\"And if he wins — what do we say then?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Victoire! Victoire! Vive la course!\",\"ph\":\"[Vik-TWAAR! Vik-TWAAR! Veev la KOORS!]\",\"r\":\"Victory! Victory! Long live the race!\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech mengen dëst Joer gewënnt Ferrari den Konstrukteurstitel.\",\"ph\":\"[Lyohn, esh MENG-en dest yoar ge-VINT Fe-RAH-ree den kon-strook-TOR-tee-tel.]\",\"r\":\"Léon, I think Ferrari will win the constructors title this year.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dat bezweifelen ech! Red Bull ass ze staark dëst Joer.\",\"ph\":\"[Dat be-ZVAY-felen esh! Red Bool ass tse shtaark dest yoar.]\",\"r\":\"I doubt that! Red Bull are too strong this year.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Mir wäerten et gesinn. Den nächste Pit Stop kënnt an dräi Ronnen.\",\"ph\":\"[Meer VEY-tern et ge-ZINN. Den NEKH-ste pit shtop kent an dray RON-nen.]\",\"r\":\"We will see. The next pit stop comes in three laps.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Richteg! Hei gëtt et spannend!\",\"ph\":\"[RISH-tekh! Hey get et SHPAN-nent!]\",\"r\":\"Correct! It is getting exciting here!\"}],\"ex\":[{\"q\":\"How do you say 'The race' in Luxembourgish?\",\"o\":[\"De Circuit\",\"D'Course\",\"De Pit Stop\",\"D'Victoire\"],\"c\":1,\"ok\":\"Correct! D'Course = the race (from French course)\",\"no\":\"No. The race = d'Course\",\"exp\":\"Many F1 terms in Luxembourgish come from French: course, circuit, victoire, pole position.\"},{\"q\":\"'Deen ass schnell!' means:\",\"o\":[\"That is big!\",\"That is far!\",\"He is fast!\",\"That is beautiful!\"],\"c\":2,\"ok\":\"Correct! Schnell = fast!\",\"no\":\"No. Schnell = fast\",\"exp\":\"Schnell is similar to German schnell. In F1 context — the most important word!\"}]},{\"id\":9,\"title\":\"Am Restaurant\",\"icon\":\"🍽️\",\"level\":\"A1\",\"ru_title\":\"At the restaurant\",\"type\":\"normal\",\"words\":[{\"cz\":\"D'Kaart, wann ech gelift\",\"ru\":\"The menu, please\",\"ph\":\"[d-kart, vann esh ge-LIFT]\",\"ic\":\"📋\"},{\"cz\":\"Judd mat Gaardebounen\",\"ru\":\"Smoked collar with broad beans (national dish)\",\"ph\":\"[yood mat GAAR-de-boo-nen]\",\"ic\":\"🫘\"},{\"cz\":\"Ech si vegetaresch\",\"ru\":\"I am vegetarian\",\"ph\":\"[Esh zee vege-TAH-resh]\",\"ic\":\"🥗\"},{\"cz\":\"Dat war exzellent!\",\"ru\":\"That was excellent!\",\"ph\":\"[Dat var ek-se-LANT!]\",\"ic\":\"😋\"},{\"cz\":\"Eng Empfehlung\",\"ru\":\"A recommendation\",\"ph\":\"[eng emp-FAY-loong]\",\"ic\":\"👌\"},{\"cz\":\"Gutt iessen!\",\"ru\":\"Bon appétit!\",\"ph\":\"[Goot EES-sen!]\",\"ic\":\"🍴\"},{\"cz\":\"Ass Servicer agräif?\",\"ru\":\"Is service included?\",\"ph\":\"[Ass ser-VEES ah-GRAYF?]\",\"ic\":\"💶\"},{\"cz\":\"Ech probéieren dat!\",\"ru\":\"I will try that!\",\"ph\":\"[Esh pro-BAY-ren dat!]\",\"ic\":\"🤤\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien! D'Kaart, wann ech gelift.\",\"ph\":\"[MOY-en! D-kart, vann esh ge-LIFT.]\",\"r\":\"Good day! The menu, please.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Hei ass d'Kaart. Hätt Dir eng Empfehlung gewënscht?\",\"ph\":\"[Hey ass d-kart. Het deer eng emp-FAY-loong ge-VINSHT?]\",\"r\":\"Here is the menu. Would you like a recommendation?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Jo, gären! Wat ass typescht Lëtzebuerger Iessen?\",\"ph\":\"[Yo, GAIR-en! Vat ass TEE-peshts LET-tse-ber-ger EES-sen?]\",\"r\":\"Yes, please! What is typical Luxembourgish food?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Judd mat Gaardebounen! Dat ass eist Nationalgeriicht.\",\"ph\":\"[Yood mat GAAR-de-boo-nen! Dat ass aysht na-TSYO-nal-ge-RISKHT.]\",\"r\":\"Judd mat Gaardebounen! That is our national dish.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech probéieren dat! An e Bier vun hei, wann ech gelift.\",\"ph\":\"[Esh pro-BAY-ren dat! An e beer voon hey, vann esh ge-LIFT.]\",\"r\":\"I will try that! And a local beer, please.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Gutt iessen, Andrey!\",\"ph\":\"[Goot EES-sen, Andrey!]\",\"r\":\"Bon appétit, Andrey!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Dat war exzellent! Merci villmols!\",\"ph\":\"[Dat var ek-se-LANT! MAIR-see FILL-mols!]\",\"r\":\"That was excellent! Thank you very much!\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech si vegetaresch. Gëtt et hei Optiounen ouni Fleesch?\",\"ph\":\"[Lyohn, esh zee vege-TAH-resh. Get et hey op-TSYO-nen OO-nee flaysh?]\",\"r\":\"Léon, I am vegetarian. Are there options without meat here?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo, natierlech! Mir hunn excellent vegetarescht Geméisgeriicht.\",\"ph\":\"[Yo, nah-TEER-lekh! Meer hoon ek-se-LANT vege-TAH-resht ge-MAYS-ge-riskht.]\",\"r\":\"Yes, of course! We have an excellent vegetarian vegetable dish.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Super. Ass Servicer agräif am Präis?\",\"ph\":\"[ZOO-per. Ass ser-VEES ah-GRAYF am pray-ss?]\",\"r\":\"Great. Is service included in the price?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo, Servicer ass ëmmer agräif zu Lëtzebuerg.\",\"ph\":\"[Yo, ser-VEES ass EM-mer ah-GRAYF tsoo LET-tse-boork.]\",\"r\":\"Yes, service is always included in Luxembourg.\"}],\"ex\":[{\"q\":\"What is Luxembourg's national dish?\",\"o\":[\"Sauerkraut\",\"Fondue\",\"Judd mat Gaardebounen\",\"Quiche Lorraine\"],\"c\":2,\"ok\":\"Correct! Judd mat Gaardebounen — smoked collar with broad beans!\",\"no\":\"No. Luxembourg's national dish is Judd mat Gaardebounen\",\"exp\":\"This hearty dish of smoked pork neck with broad beans is the pride of Luxembourgish cuisine!\"},{\"q\":\"'Gutt iessen!' means:\",\"o\":[\"Good evening!\",\"Good shopping!\",\"Bon appétit!\",\"Good night!\"],\"c\":2,\"ok\":\"Correct! Gutt iessen = Bon appétit!\",\"no\":\"No. Gutt iessen = Bon appétit / Good eating!\",\"exp\":\"Iessen means to eat. Gutt iessen literally means eat well.\"}]},{\"id\":10,\"title\":\"D'Famill\",\"icon\":\"👨‍👩‍👧‍👦\",\"level\":\"A1\",\"ru_title\":\"Family\",\"type\":\"normal\",\"words\":[{\"cz\":\"D'Mamm\",\"ru\":\"Mother / Mum\",\"ph\":\"[d-mam]\",\"ic\":\"👩\"},{\"cz\":\"De Papp\",\"ru\":\"Father / Dad\",\"ph\":\"[de pap]\",\"ic\":\"👨\"},{\"cz\":\"D'Schwëster\",\"ru\":\"Sister\",\"ph\":\"[d-SHVES-ter]\",\"ic\":\"👧\"},{\"cz\":\"De Brudder\",\"ru\":\"Brother\",\"ph\":\"[de BROO-der]\",\"ic\":\"👦\"},{\"cz\":\"D'Fra\",\"ru\":\"Wife / Woman\",\"ph\":\"[d-frah]\",\"ic\":\"💍\"},{\"cz\":\"De Mann\",\"ru\":\"Husband / Man\",\"ph\":\"[de man]\",\"ic\":\"👔\"},{\"cz\":\"D'Kanner\",\"ru\":\"The children\",\"ph\":\"[d-KAN-ner]\",\"ic\":\"👶\"},{\"cz\":\"D'Groussmamm\",\"ru\":\"Grandmother\",\"ph\":\"[d-GROOS-mam]\",\"ic\":\"👵\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Andrey, hues du eng Famill hei zu Lëtzebuerg?\",\"ph\":\"[Andrey, hoos doo eng fa-MILL hey tsoo LET-tse-boork?]\",\"r\":\"Andrey, do you have a family here in Luxembourg?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Jo! Ech hunn eng Fra a zwee Kanner. Si wunnen och hei.\",\"ph\":\"[Yo! Esh hoon eng frah ah tsvay KAN-ner. Zee VOON-en okh hey.]\",\"r\":\"Yes! I have a wife and two children. They live here too.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Wéi al si Är Kanner?\",\"ph\":\"[Vey ahl zee air KAN-ner?]\",\"r\":\"How old are your children?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Mäi Jong ass siechzéng Joer a meng Duechter ass zwielef.\",\"ph\":\"[May yong ass ZEESH-tseng yoar ah meng DOKH-ter ass TSVEE-lef.]\",\"r\":\"My son is sixteen and my daughter is twelve.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Schwätzen si Lëtzebuergesch?\",\"ph\":\"[SHVET-tsen zee LET-tse-ber-gesh?]\",\"r\":\"Do they speak Luxembourgish?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Mäi Jong schwätzt et gutt. Meng Duechter léiert et nach.\",\"ph\":\"[May yong shvets et goot. Meng DOKH-ter LAIRT et nakh.]\",\"r\":\"My son speaks it well. My daughter is still learning it.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech wëll vu menger Famill zu Lëtzebuerg schwätzen.\",\"ph\":\"[Lyohn, esh vell voo MENG-er fa-MILL tsoo LET-tse-boork shvet-tsen.]\",\"r\":\"Léon, I want to talk about my family in Luxembourg.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Perfekt fir den Sproochentest. Fänk un!\",\"ph\":\"[Per-FEKT feer den SHPROH-khen-test. Fenk oon!]\",\"r\":\"Perfect for the Sproochentest. Begin!\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Ech wunnen hei mat menger Fra. Mir hunn nach keng Kanner, mä mir plangen eng Famill.\",\"ph\":\"[Esh VOON-en hey mat MENG-er frah. Meer hoon nakh keng KAN-ner, may meer PLANG-en eng fa-MILL.]\",\"r\":\"I live here with my wife. We do not have children yet, but we are planning a family.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Formidabel! A wunnen Är Elteren och zu Lëtzebuerg?\",\"ph\":\"[For-mi-DAH-bel! Ah VOON-en air EL-teren okh tsoo LET-tse-boork?]\",\"r\":\"Wonderful! And do your parents also live in Luxembourg?\"}],\"ex\":[{\"q\":\"How do you say 'mother' in Luxembourgish?\",\"o\":[\"De Papp\",\"D'Mamm\",\"D'Fra\",\"D'Schwëster\"],\"c\":1,\"ok\":\"Correct! D'Mamm = mother\",\"no\":\"No. Mother = D'Mamm [d-mam]\",\"exp\":\"D'Mamm, De Papp — very similar to German Mama/Papa.\"},{\"q\":\"'D'Kanner' means:\",\"o\":[\"The men\",\"The women\",\"The children\",\"The parents\"],\"c\":2,\"ok\":\"Correct! D'Kanner = the children\",\"no\":\"No. D'Kanner = the children\",\"exp\":\"D'Kanner is the plural of D'Kand (child).\"}]},{\"id\":11,\"title\":\"Schachclub Lëtzebuerg\",\"icon\":\"♟️\",\"level\":\"A1\",\"ru_title\":\"Chess: At the Luxembourg club\",\"type\":\"chess\",\"words\":[{\"cz\":\"D'Schachpartie\",\"ru\":\"The chess game\",\"ph\":\"[d-SHAKH-par-tee]\",\"ic\":\"♟️\"},{\"cz\":\"Schach!\",\"ru\":\"Check!\",\"ph\":\"[shakh]\",\"ic\":\"⚠️\"},{\"cz\":\"Schachmatt!\",\"ru\":\"Checkmate!\",\"ph\":\"[SHAKH-mat]\",\"ic\":\"🏆\"},{\"cz\":\"Ech spillen wäiss / schwarz\",\"ru\":\"I play white / black\",\"ph\":\"[Esh SHPIL-len vayss / shvarts]\",\"ic\":\"⬜\"},{\"cz\":\"Deng Zuch!\",\"ru\":\"Your move!\",\"ph\":\"[deng tsookh]\",\"ic\":\"👉\"},{\"cz\":\"Remis\",\"ru\":\"Draw\",\"ph\":\"[re-MEE]\",\"ic\":\"🤝\"},{\"cz\":\"De Turnéier\",\"ru\":\"The tournament\",\"ph\":\"[de toor-NAY-er]\",\"ic\":\"🏅\"},{\"cz\":\"Ech gewannen / verléieren\",\"ru\":\"I win / lose\",\"ph\":\"[Esh ge-VAN-nen / fer-LEE-ren]\",\"ic\":\"🎯\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien! Ech sichen de Schachclub. Ass dat hei?\",\"ph\":\"[MOY-en! Esh ZEE-khen de SHAKH-kloob. Ass dat hey?]\",\"r\":\"Good morning! I am looking for the chess club. Is it here?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo! Wilkommen am Schachclub Lëtzebuerg! Ech si Léon, den Organisateur.\",\"ph\":\"[Yo! VIL-ko-men am SHAKH-kloob LET-tse-boork! Esh zee Lyohn, den or-ga-ni-ZA-tor.]\",\"r\":\"Yes! Welcome to the Chess Club Luxembourg! I am Léon, the organiser.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Super! Ech spillen Schach zanter drësseg Joer. Spillt Dir och?\",\"ph\":\"[ZOO-per! Esh SHPIL-len shakh TSAN-ter DRIS-sekh yoar. Shpillt deer okh?]\",\"r\":\"Great! I have been playing chess for thirty years. Do you play too?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo! Wëllt Dir eng Partie spillen? Ech spillen wäiss.\",\"ph\":\"[Yo! Veldt deer eng par-TEE SHPIL-len? Esh SHPIL-len vayss.]\",\"r\":\"Yes! Would you like to play a game? I will play white.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Gär! Dann spillen ech schwarz. Deng Zuch!\",\"ph\":\"[Gair! Dan SHPIL-len esh shvarts. Deng tsookh!]\",\"r\":\"Gladly! Then I play black. Your move!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Schach! A... Schachmatt! Gutt gespillt!\",\"ph\":\"[Shakh! Ah... SHAKH-mat! Goot ge-SHPILLT!]\",\"r\":\"Check! And... Checkmate! Well played!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Glückwonsch! Eng aner Partie?\",\"ph\":\"[GLIK-vonnsh! Eng AH-ner par-TEE?]\",\"r\":\"Congratulations! Another game?\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech wëll mäi Schachspill verbesseren. Hutt Dir Ratschléi?\",\"ph\":\"[Lyohn, esh vell may SHAKH-shpill fer-BES-seren. Hoot deer RAT-shlayy?]\",\"r\":\"Léon, I want to improve my chess game. Do you have advice?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Natierlech! Kontrolléier de Zentrum. Entwéchle schnell deng Feguren.\",\"ph\":\"[Nah-TEER-lekh! Kon-trol-AY-er de TSEN-troom. Ent-VEK-le shnell deng FEE-goo-ren.]\",\"r\":\"Of course! Control the centre. Develop your pieces quickly.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Verstanen. A wann de Géigner Remis ubitt?\",\"ph\":\"[Fer-SHTAN-en. Ah vann de GAYN-yer re-MEE OO-bit?]\",\"r\":\"Understood. And when the opponent offers a draw?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dann denk! Ass deng Positioun besser? Dann weider spillen!\",\"ph\":\"[Dan denk! Ass deng po-ZEE-tsyon BES-ser? Dan VAY-der SHPIL-len!]\",\"r\":\"Then think! Is your position better? Then keep playing!\"}],\"ex\":[{\"q\":\"How do you say 'Checkmate!' in Luxembourgish?\",\"o\":[\"Schach!\",\"Remis!\",\"Schachmatt!\",\"Deng Zuch!\"],\"c\":2,\"ok\":\"Correct! Schachmatt! = Checkmate!\",\"no\":\"No. Checkmate = Schachmatt!\",\"exp\":\"Schach = check, Schachmatt = checkmate. Matt comes from Persian mat meaning defeated.\"},{\"q\":\"'Deng Zuch!' means:\",\"o\":[\"Your win!\",\"Your piece!\",\"Your move!\",\"Your club!\"],\"c\":2,\"ok\":\"Correct! Deng Zuch = Your move!\",\"no\":\"No. Deng Zuch = Your move!\",\"exp\":\"Zuch means move in chess context. Also means train in transport context!\"}]},{\"id\":12,\"title\":\"Gesondheet\",\"icon\":\"🏥\",\"level\":\"A1\",\"ru_title\":\"Health\",\"type\":\"normal\",\"words\":[{\"cz\":\"Ech sinn krank\",\"ru\":\"I am ill\",\"ph\":\"[Esh zinn krank]\",\"ic\":\"🤒\"},{\"cz\":\"Ech hu Kappwéi\",\"ru\":\"I have a headache\",\"ph\":\"[Esh hoo KAP-vay]\",\"ic\":\"🤕\"},{\"cz\":\"De Dokter\",\"ru\":\"The doctor\",\"ph\":\"[de DOK-ter]\",\"ic\":\"👨‍⚕️\"},{\"cz\":\"D'Apoték\",\"ru\":\"The pharmacy\",\"ph\":\"[d-ah-po-TAYK]\",\"ic\":\"💊\"},{\"cz\":\"En Rendez-vous\",\"ru\":\"An appointment\",\"ph\":\"[en rahn-day-VOO]\",\"ic\":\"📅\"},{\"cz\":\"Ech si gesond\",\"ru\":\"I am healthy\",\"ph\":\"[Esh zee ge-ZONT]\",\"ic\":\"💪\"},{\"cz\":\"Wéi deet et Iech?\",\"ru\":\"How do you feel? (formal)\",\"ph\":\"[Vey dayt et eekh?]\",\"ic\":\"❤️\"},{\"cz\":\"Den Noutfall\",\"ru\":\"The emergency\",\"ph\":\"[den NOOT-fal]\",\"ic\":\"🚑\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Andrey, du gesäis net gutt aus. Wéi deet et dir?\",\"ph\":\"[Andrey, doo ge-ZAYS net goot ows. Vey dayt et deer?]\",\"r\":\"Andrey, you do not look well. How do you feel?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech sinn krank. Ech hu Kappwéi a Féiwer.\",\"ph\":\"[Esh zinn krank. Esh hoo KAP-vay ah FAY-ver.]\",\"r\":\"I am ill. I have a headache and a fever.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Du solls zum Dokter goen! Hues du en Rendez-vous?\",\"ph\":\"[Doo zolls tsoom DOK-ter go-en! Hoos doo en rahn-day-VOO?]\",\"r\":\"You should go to the doctor! Do you have an appointment?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Nee, nach net. Wéi kann ech een unruffen?\",\"ph\":\"[Nay, nakh net. Vey kan esh ayn OON-roo-fen?]\",\"r\":\"No, not yet. How can I call to make one?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Ruff 112 am Noutfall. Soss ruff deng Dokter un.\",\"ph\":\"[Roof hoon-nert-zwielef am NOOT-fal. Zons roof deng DOK-ter oon.]\",\"r\":\"Call 112 in an emergency. Otherwise call your doctor.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Merci, Léon. Ech ginn haut nach bei d'Apoték.\",\"ph\":\"[MAIR-see, Lyohn. Esh ginn howt nakh bay d-ah-po-TAYK.]\",\"r\":\"Thank you, Léon. I will go to the pharmacy today too.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech brauchen en Rendez-vous beim Dokter. Wéi maachen ech dat?\",\"ph\":\"[Lyohn, esh BROW-khen en rahn-day-VOO baym DOK-ter. Vey MAH-khen esh dat?]\",\"r\":\"Léon, I need a doctor's appointment. How do I do that?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Ruff d'Cabinet vum Dokter un. Soe: Moien, ech wéilt en Rendez-vous maachen.\",\"ph\":\"[Roof d-ka-bi-NAY voom DOK-ter oon. Zo: MOY-en, esh vayt en rahn-day-VOO MAH-khen.]\",\"r\":\"Call the doctor's surgery. Say: Hello, I would like to make an appointment.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Wéi schwätzen ech iwwer meng Symptomer?\",\"ph\":\"[Vey SHVET-tsen esh EE-ver meng symp-TO-mer?]\",\"r\":\"How do I talk about my symptoms?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Soe wat dir wéideet: Ech hu Kappwéi, Halsschmerzen, oder Féiwer.\",\"ph\":\"[Zo vat deer VAY-dayt: Esh hoo KAP-vay, HALS-shmert-tsen, OH-der FAY-ver.]\",\"r\":\"Say what hurts: I have a headache, sore throat, or fever.\"}],\"ex\":[{\"q\":\"How do you say 'I am ill' in Luxembourgish?\",\"o\":[\"Ech si gesond\",\"Ech sinn krank\",\"Ech hu Féiwer\",\"Ech ginn zum Dokter\"],\"c\":1,\"ok\":\"Correct! Ech sinn krank = I am ill\",\"no\":\"No. I am ill = Ech sinn krank\",\"exp\":\"Krank means ill/sick. Very similar to German krank.\"},{\"q\":\"What number do you call in an emergency in Luxembourg?\",\"o\":[\"110\",\"999\",\"112\",\"911\"],\"c\":2,\"ok\":\"Correct! 112 is the European emergency number.\",\"no\":\"No. Emergency number in Luxembourg is 112\",\"exp\":\"112 is the standard emergency number across the EU.\"}]},{\"id\":13,\"title\":\"Wunnen zu Lëtzebuerg\",\"icon\":\"🏠\",\"level\":\"A1\",\"ru_title\":\"Housing in Luxembourg\",\"type\":\"normal\",\"words\":[{\"cz\":\"D'Wunneng\",\"ru\":\"The flat / apartment\",\"ph\":\"[d-VOON-eng]\",\"ic\":\"🏢\"},{\"cz\":\"D'Haus\",\"ru\":\"The house\",\"ph\":\"[d-hows]\",\"ic\":\"🏡\"},{\"cz\":\"D'Loyerfaart\",\"ru\":\"The rent\",\"ph\":\"[d-LOY-er-fart]\",\"ic\":\"💶\"},{\"cz\":\"Zu deier\",\"ru\":\"Too expensive\",\"ph\":\"[tsoo DAY-er]\",\"ic\":\"😰\"},{\"cz\":\"De Bail\",\"ru\":\"The lease\",\"ph\":\"[de bayl]\",\"ic\":\"📄\"},{\"cz\":\"De Proprietär\",\"ru\":\"The landlord\",\"ph\":\"[de pro-prye-TAR]\",\"ic\":\"🔑\"},{\"cz\":\"Eng Grenzgänger\",\"ru\":\"A cross-border worker\",\"ph\":\"[eng GRENTS-geng-er]\",\"ic\":\"🚗\"},{\"cz\":\"Ech sichen eng Wunneng\",\"ru\":\"I am looking for a flat\",\"ph\":\"[Esh ZEE-khen eng VOON-eng]\",\"ic\":\"🔍\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Léon, ech sichen eng Wunneng zu Lëtzebuerg. Hutt Dir eng Iddi?\",\"ph\":\"[Lyohn, esh ZEE-khen eng VOON-eng tsoo LET-tse-boork. Hoot deer eng i-DAY?]\",\"r\":\"Léon, I am looking for a flat in Luxembourg. Do you have an idea?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dat ass schwéier! D'Loyerfaart ass ze héich hei.\",\"ph\":\"[Dat ass SHVAY-er! D-LOY-er-fart ass tse heysh hey.]\",\"r\":\"That is difficult! The rent is too high here.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Maximal dausend Euro de Mount.\",\"ph\":\"[Mak-si-MAL DOW-sent OY-ro de mownt.]\",\"r\":\"Maximum one thousand euros per month.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Fir dausend kritt Dir zu Lëtzebuerg-Stad just e Zëmmer. Kuckt mol zu Esch!\",\"ph\":\"[Feer DOW-sent krit deer tsoo LET-tse-boork-Shtaht yoost e TSIM-mer. Kookt mol tsoo Esh!]\",\"r\":\"For a thousand you only get a room in Luxembourg City. Look at Esch!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Oder ech gi wunnen zu Frankräich als Grenzgänger!\",\"ph\":\"[OH-der esh gee VOON-en tsoo FRANK-raysh als GRENTS-geng-er!]\",\"r\":\"Or I will live in France as a cross-border worker!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Vill Leit machen dat! 200.000 Grenzgänger kommen all Dag hei.\",\"ph\":\"[Fill layt MAH-khen dat! Tsvay-HON-nert-DOW-sent GRENTS-geng-er KOM-men all dahg hey.]\",\"r\":\"Many people do that! 200,000 cross-border workers come here every day.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech wëll mäi Bail ënnerschreiwen. Wat soll ech oppassen?\",\"ph\":\"[Lyohn, esh vell may bayl EN-ner-shray-ven. Vat zol esh OP-pas-sen?]\",\"r\":\"Léon, I want to sign my lease. What should I watch out for?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Lies de Bail genee duerch! Check d'Loyerfaart, d'Garantie an d'Kündigungsfrist.\",\"ph\":\"[Lees de bayl ge-NOO doorsh! Shek d-LOY-er-fart, d-ga-ran-TEE an d-KOON-di-goong-sfrist.]\",\"r\":\"Read the lease carefully! Check the rent, the deposit and the notice period.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Wéi héich ass normalerweis d'Garantie?\",\"ph\":\"[Vey heysh ass nor-MAH-ler-vays d-ga-ran-TEE?]\",\"r\":\"How high is the deposit normally?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Normalerweis dräi Méint Loyerfaart.\",\"ph\":\"[Nor-MAH-ler-vays dray maynts LOY-er-fart.]\",\"r\":\"Normally three months rent.\"}],\"ex\":[{\"q\":\"What is 'D'Wunneng' in English?\",\"o\":[\"The house\",\"The flat\",\"The room\",\"The address\"],\"c\":1,\"ok\":\"Correct! D'Wunneng = the flat\",\"no\":\"No. D'Wunneng = the flat\",\"exp\":\"Wunnen means to live. D'Wunneng = the place where you live.\"},{\"q\":\"Approximately how many cross-border workers come to Luxembourg daily?\",\"o\":[\"50,000\",\"100,000\",\"200,000\",\"500,000\"],\"c\":2,\"ok\":\"Correct! About 200,000 cross-border workers come to Luxembourg every day.\",\"no\":\"No. About 200,000 cross-border workers come daily.\",\"exp\":\"Luxembourg has one of the highest percentages of cross-border workers in the world!\"}]},{\"id\":14,\"title\":\"Beruffer a Schaffen\",\"icon\":\"💼\",\"level\":\"A1\",\"ru_title\":\"Jobs & work\",\"type\":\"normal\",\"words\":[{\"cz\":\"Ech schaffen als...\",\"ru\":\"I work as...\",\"ph\":\"[Esh SHAF-fen als]\",\"ic\":\"💼\"},{\"cz\":\"De Patron\",\"ru\":\"The boss\",\"ph\":\"[de pa-TRON]\",\"ic\":\"👔\"},{\"cz\":\"D'Aarbecht\",\"ru\":\"The work / job\",\"ph\":\"[d-AAR-bekht]\",\"ic\":\"🏭\"},{\"cz\":\"De Gehalt\",\"ru\":\"The salary\",\"ph\":\"[de ge-HALT]\",\"ic\":\"💶\"},{\"cz\":\"D'Iwwerstonnen\",\"ru\":\"The overtime\",\"ph\":\"[d-EE-ver-shton-nen]\",\"ic\":\"⏰\"},{\"cz\":\"D'Büro\",\"ru\":\"The office\",\"ph\":\"[d-boo-RO]\",\"ic\":\"🏢\"},{\"cz\":\"En Interview\",\"ru\":\"An interview\",\"ph\":\"[en in-ter-VYOO]\",\"ic\":\"🎯\"},{\"cz\":\"Ech si fräilanzend\",\"ru\":\"I am freelance\",\"ph\":\"[Esh zee FRAY-lan-tsent]\",\"ic\":\"🖥️\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Andrey, wat schaffe Dir berufflech?\",\"ph\":\"[Andrey, vat SHAF-fe deer be-ROOF-lekh?]\",\"r\":\"Andrey, what do you do professionally?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech schaffen als IT-Spezialist an enger Lëtzebuerger Firma.\",\"ph\":\"[Esh SHAF-fen als I-T shpe-tsya-LIST an EN-ger LET-tse-ber-ger FIR-mah.]\",\"r\":\"I work as an IT specialist at a Luxembourgish company.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Interessant! Schafft Dir am Büro oder vun doheem?\",\"ph\":\"[in-te-res-ANT! Shafft deer am boo-RO OH-der voon do-HAYM?]\",\"r\":\"Interesting! Do you work in the office or from home?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Dräi Deeg am Büro, zwee Deeg Homeoffice. Dat ass perfekt.\",\"ph\":\"[Dray dayg am boo-RO, tsvay dayg HOME-o-fees. Dat ass per-FEKT.]\",\"r\":\"Three days in the office, two days working from home. That is perfect.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"A gëtt et vill Iwwerstonnen?\",\"ph\":\"[Ah get et fill EE-ver-shton-nen?]\",\"r\":\"Is there a lot of overtime?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Manchmol, mä de Patron ass verständnisvoll.\",\"ph\":\"[MANSH-mol, may de pa-TRON ass fer-SHTEND-nis-fol.]\",\"r\":\"Sometimes, but the boss is understanding.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech siche eng nei Aarbecht am Finanzsektor.\",\"ph\":\"[Lyohn, esh ZEE-khe eng nay AAR-bekht am fi-NANTS-sek-tor.]\",\"r\":\"Léon, I am looking for new work in the financial sector.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Lëtzebuerg ass perfekt dofir! Mir sinn de gréisste Fondszentre vun Europa.\",\"ph\":\"[LET-tse-boork ass per-FEKT do-FEER! Meer zinn de GRAY-ste FONDS-tsen-tre voon OY-ro-pah.]\",\"r\":\"Luxembourg is perfect for that! We are the largest fund centre in Europe.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Wéi léisst sech e gudden CV maachen fir Lëtzebuerg?\",\"ph\":\"[Vey layst zesh e goo-den tsay-vay MAH-khen feer LET-tse-boork?]\",\"r\":\"How do you make a good CV for Luxembourg?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Schreif et op Lëtzebuergesch, Franséisch an Däitsch — dat imponéiert.\",\"ph\":\"[Shrayf et op LET-tse-ber-gesh, fran-ZAY-ish an DAY-tsh — dat im-po-NEERT.]\",\"r\":\"Write it in Luxembourgish, French and German — that impresses.\"}],\"ex\":[{\"q\":\"'Ech schaffen als...' means:\",\"o\":[\"I am looking for...\",\"I work as...\",\"I study to be...\",\"I used to work as...\"],\"c\":1,\"ok\":\"Correct! Ech schaffen als = I work as\",\"no\":\"No. Ech schaffen als = I work as\",\"exp\":\"Schaffen means to work in Luxembourgish. Very useful for the Sproochentest interview!\"},{\"q\":\"Luxembourg is known as Europe's largest:\",\"o\":[\"Car manufacturer\",\"Investment fund centre\",\"Agricultural nation\",\"Tourist destination\"],\"c\":1,\"ok\":\"Correct! Luxembourg is Europe's largest investment fund centre!\",\"no\":\"No. Luxembourg is Europe's largest investment fund centre\",\"exp\":\"Luxembourg hosts more investment funds than anywhere else in Europe.\"}]},{\"id\":15,\"title\":\"Sprooch zu Lëtzebuerg\",\"icon\":\"🗣️\",\"level\":\"A1\",\"ru_title\":\"Languages in Luxembourg\",\"type\":\"normal\",\"words\":[{\"cz\":\"Lëtzebuergesch\",\"ru\":\"Luxembourgish\",\"ph\":\"[LET-tse-ber-gesh]\",\"ic\":\"🇱🇺\"},{\"cz\":\"Franséisch\",\"ru\":\"French\",\"ph\":\"[fran-ZAY-ish]\",\"ic\":\"🇫🇷\"},{\"cz\":\"Däitsch\",\"ru\":\"German\",\"ph\":\"[daytsh]\",\"ic\":\"🇩🇪\"},{\"cz\":\"Ech schwätzen...\",\"ru\":\"I speak...\",\"ph\":\"[Esh SHVET-tsen]\",\"ic\":\"🗣️\"},{\"cz\":\"De Sproochentest\",\"ru\":\"The language exam\",\"ph\":\"[de SHPROH-khen-test]\",\"ic\":\"📋\"},{\"cz\":\"Flësseg\",\"ru\":\"Fluent\",\"ph\":\"[FLES-sekh]\",\"ic\":\"✅\"},{\"cz\":\"En bësschen\",\"ru\":\"A little\",\"ph\":\"[en BIS-shen]\",\"ic\":\"🤏\"},{\"cz\":\"Ech léieren\",\"ru\":\"I am learning\",\"ph\":\"[Esh LAY-ren]\",\"ic\":\"📚\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Andrey, wéi vill Sproochen schwätzt du?\",\"ph\":\"[Andrey, vey fill SHPROH-khen shvets doo?]\",\"r\":\"Andrey, how many languages do you speak?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech schwätzen Russesch a Englesch flësseg. Ech léieren Lëtzebuergesch.\",\"ph\":\"[Esh SHVET-tsen ROOS-esh ah ENG-lesh FLES-sekh. Esh LAY-ren LET-tse-ber-gesh.]\",\"r\":\"I speak Russian and English fluently. I am learning Luxembourgish.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Super! Wéi geet et mam Sproochentest?\",\"ph\":\"[ZOO-per! Vey gate et mam SHPROH-khen-test?]\",\"r\":\"Great! How is the Sproochentest going?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Et ass schwéier mä ech üwen all Dag. Ech wëll d'Biergerschaft kréien.\",\"ph\":\"[Et ass SHVAY-er may esh EE-ven all dahg. Esh vell d-BEER-ger-shaft KRAY-en.]\",\"r\":\"It is difficult but I practise every day. I want to get citizenship.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dat ass eng excellent Motivatioun! Lëtzebuergesch ass net esou schwéier.\",\"ph\":\"[Dat ass eng ek-se-LANT mo-tee-vah-TSYOON! LET-tse-ber-gesh ass net EH-zo SHVAY-er.]\",\"r\":\"That is an excellent motivation! Luxembourgish is not so difficult.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech schwätzen et en bësschen. Elo léieren ech méi.\",\"ph\":\"[Esh SHVET-tsen et en BIS-shen. EH-lo LAY-ren esh may.]\",\"r\":\"I speak it a little. Now I am learning more.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, zu Lëtzebuerg gi dräi Sproochen geschwat. Wéi ass dat?\",\"ph\":\"[Lyohn, tsoo LET-tse-boork gee dray SHPROH-khen ge-SHVAT. Vey ass dat?]\",\"r\":\"Léon, three languages are spoken in Luxembourg. How does that work?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Lëtzebuergesch ass eis Nationalsproch. Am Gericht gëtt Lëtzebuergesch geschwat.\",\"ph\":\"[LET-tse-ber-gesh ass ays na-TSYO-nal-shprokh. Am ge-RISKHT get LET-tse-ber-gesh ge-SHVAT.]\",\"r\":\"Luxembourgish is our national language. In court, Luxembourgish is spoken.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"A Franséisch a Däitsch?\",\"ph\":\"[Ah fran-ZAY-ish ah daytsh?]\",\"r\":\"And French and German?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Franséisch ass am Gesetz an am Handel. Däitsch a Schoulen a Medien.\",\"ph\":\"[fran-ZAY-ish ass am ge-ZETS an am HAN-del. Daytsh an SHOO-len ah ME-dyen.]\",\"r\":\"French is in law and commerce. German in schools and media.\"}],\"ex\":[{\"q\":\"How many official languages does Luxembourg have?\",\"o\":[\"1\",\"2\",\"3\",\"4\"],\"c\":2,\"ok\":\"Correct! Luxembourg has 3 official languages: Luxembourgish, French and German.\",\"no\":\"No. Luxembourg has 3 official languages!\",\"exp\":\"Luxembourgish (national + official), French (official), German (official).\"},{\"q\":\"'Ech schwätzen Lëtzebuergesch en bësschen' means:\",\"o\":[\"I speak Luxembourgish fluently\",\"I do not speak Luxembourgish\",\"I am learning Luxembourgish\",\"I speak a little Luxembourgish\"],\"c\":3,\"ok\":\"Correct! En bësschen = a little\",\"no\":\"No. En bësschen = a little\",\"exp\":\"En bësschen is very useful! Ech schwätzen Lëtzebuergesch en bësschen — great for the Sproochentest!\"}]},{\"id\":16,\"title\":\"Wieder a Saisons\",\"icon\":\"🌤️\",\"level\":\"A1\",\"ru_title\":\"Weather & seasons\",\"type\":\"normal\",\"words\":[{\"cz\":\"Et reent\",\"ru\":\"It is raining\",\"ph\":\"[et raynt]\",\"ic\":\"🌧️\"},{\"cz\":\"Et ass schéint Wieder\",\"ru\":\"The weather is nice\",\"ph\":\"[et ass shayn VEE-der]\",\"ic\":\"☀️\"},{\"cz\":\"Kal / Waarm\",\"ru\":\"Cold / Warm\",\"ph\":\"[kal / vaarm]\",\"ic\":\"🌡️\"},{\"cz\":\"De Summer\",\"ru\":\"Summer\",\"ph\":\"[de ZOO-mer]\",\"ic\":\"🌞\"},{\"cz\":\"De Wanter\",\"ru\":\"Winter\",\"ph\":\"[de VAN-ter]\",\"ic\":\"❄️\"},{\"cz\":\"De Fréijoer\",\"ru\":\"Spring\",\"ph\":\"[de FRAY-yoar]\",\"ic\":\"🌸\"},{\"cz\":\"Den Hierscht\",\"ru\":\"Autumn\",\"ph\":\"[den heerrsht]\",\"ic\":\"🍂\"},{\"cz\":\"Wéi ass d'Wieder?\",\"ru\":\"What is the weather like?\",\"ph\":\"[Vey ass d-VEE-der?]\",\"ic\":\"🌈\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Léon, wéi ass d'Wieder haut?\",\"ph\":\"[Lyohn, vey ass d-VEE-der howt?]\",\"r\":\"Léon, what is the weather like today?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Et reent erëm! Dat ass typescht Lëtzebuerger Wieder.\",\"ph\":\"[Et raynt e-RIM! Dat ass TEE-peshts LET-tse-ber-ger VEE-der.]\",\"r\":\"It is raining again! That is typical Luxembourgish weather.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ass de Summer hei och sou ragnass?\",\"ph\":\"[Ass de ZOO-mer hey okh zo RAG-nas?]\",\"r\":\"Is the summer here also so rainy?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Net ëmmer. Am Juli a August kann et schéint a waarm sinn.\",\"ph\":\"[Net EM-mer. Am Yoo-lee ah OW-goost kan et shayn ah vaarm zinn.]\",\"r\":\"Not always. In July and August it can be nice and warm.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"A wéi kal ass de Wanter?\",\"ph\":\"[Ah vey kal ass de VAN-ter?]\",\"r\":\"And how cold is the winter?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Normalerweis ëm null Grad. Manchmol schneit et.\",\"ph\":\"[Nor-MAH-ler-vays em nool grat. MANSH-mol shnyt et.]\",\"r\":\"Usually around zero degrees. Sometimes it snows.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech plangen en Weekend am Éislek. Wéi ass d'Wieder do?\",\"ph\":\"[Lyohn, esh PLANG-en en VEE-kend am AY-slekh. Vey ass d-VEE-der do?]\",\"r\":\"Léon, I am planning a weekend in the Ardennes. What is the weather like there?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Den Éislek ass e bësse méi kal a vernebeelt wéi d'Stad. Huel waarm Kleeder mat!\",\"ph\":\"[Den AY-slekh ass e BIS-e may kal ah fer-ne-BAYLT vey d-shtat. Hool vaarm KLAY-der mat!]\",\"r\":\"The Ardennes is a little cooler and more foggy than the city. Take warm clothes!\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Merci! A reent et dacks am Fréijoer do?\",\"ph\":\"[MAIR-see! Ah raynt et daks am FRAY-yoar do?]\",\"r\":\"Thank you! And does it often rain there in spring?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo, mä de Fréijoer ass och wunderschéin mat all de Bléien.\",\"ph\":\"[Yo, may de FRAY-yoar ass okh VOON-der-shayn mat all de BLAY-en.]\",\"r\":\"Yes, but spring is also beautiful with all the blossoms.\"}],\"ex\":[{\"q\":\"'Et reent' means:\",\"o\":[\"It is sunny\",\"It is snowing\",\"It is windy\",\"It is raining\"],\"c\":3,\"ok\":\"Correct! Et reent = It is raining\",\"no\":\"No. Et reent = It is raining\",\"exp\":\"Reenen = to rain. Very useful in Luxembourg where it rains frequently!\"},{\"q\":\"How do you say 'spring' in Luxembourgish?\",\"o\":[\"De Summer\",\"De Wanter\",\"De Fréijoer\",\"Den Hierscht\"],\"c\":2,\"ok\":\"Correct! De Fréijoer = spring\",\"no\":\"No. Spring = de Fréijoer\",\"exp\":\"Fréijoer literally means early year. The seasons: Fréijoer, Summer, Hierscht, Wanter.\"}]},{\"id\":17,\"title\":\"Emotiounen a Gefiller\",\"icon\":\"❤️\",\"level\":\"A1\",\"ru_title\":\"Emotions & feelings\",\"type\":\"normal\",\"words\":[{\"cz\":\"Ech si glécklech\",\"ru\":\"I am happy\",\"ph\":\"[Esh zee GLEK-lekh]\",\"ic\":\"😊\"},{\"cz\":\"Ech si traureg\",\"ru\":\"I am sad\",\"ph\":\"[Esh zee TROW-rekh]\",\"ic\":\"😢\"},{\"cz\":\"Ech si midd\",\"ru\":\"I am tired\",\"ph\":\"[Esh zee mit]\",\"ic\":\"😴\"},{\"cz\":\"Ech si gestresst\",\"ru\":\"I am stressed\",\"ph\":\"[Esh zee ge-STREST]\",\"ic\":\"😰\"},{\"cz\":\"Ech fri mech!\",\"ru\":\"I am looking forward to it!\",\"ph\":\"[Esh free mesh!]\",\"ic\":\"🎉\"},{\"cz\":\"Dat freet mech\",\"ru\":\"That pleases me\",\"ph\":\"[Dat frayt mesh]\",\"ic\":\"😄\"},{\"cz\":\"Ech si gespannt\",\"ru\":\"I am excited / curious\",\"ph\":\"[Esh zee ge-SHPANT]\",\"ic\":\"🤩\"},{\"cz\":\"Kee Problem!\",\"ru\":\"No problem!\",\"ph\":\"[Kay Pro-BLAYM]\",\"ic\":\"👌\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Andrey, wéi gefallt et dir zu Lëtzebuerg?\",\"ph\":\"[Andrey, vey ge-FAULT et deer tsoo LET-tse-boork?]\",\"r\":\"Andrey, how do you like it in Luxembourg?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech si glécklich hei! Et ass e schéint Land.\",\"ph\":\"[Esh zee GLEK-lekh hey! Et ass e shayn lant.]\",\"r\":\"I am happy here! It is a beautiful country.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Wat gefallt dir am beschten?\",\"ph\":\"[Vat ge-FAULT deer am BESH-ten?]\",\"r\":\"What do you like best?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"D'Leit si frëndlech. An den Transport ass gratis — dat freet mech!\",\"ph\":\"[D-layt zee FREND-lekh. An den trans-PORT ass GRAH-tees — dat frayt mesh!]\",\"r\":\"The people are friendly. And the transport is free — that pleases me!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"A wat gefallt dir net sou?\",\"ph\":\"[Ah vat ge-FAULT deer net zo?]\",\"r\":\"And what do you not like so much?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech si manchmol midd vun der Aarbecht. An de Präis sinn héich.\",\"ph\":\"[Esh zee MANSH-mol mit voon dair AAR-bekht. An de pray-ss zinn heysh.]\",\"r\":\"I am sometimes tired from work. And the prices are high.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech si gespannt op de Sproochentest. An och en bësschen nervös!\",\"ph\":\"[Lyohn, esh zee ge-SHPANT op de SHPROH-khen-test. An okh en BIS-shen ner-VEZ!]\",\"r\":\"Léon, I am excited about the Sproochentest. And also a little nervous!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dat ass ganz normal. Mä du bass gutt virbereest!\",\"ph\":\"[Dat ass gants nor-MAL. May doo bass goot FEER-be-rayst!]\",\"r\":\"That is completely normal. But you are well prepared!\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Merci fir deng Encouragement. Ech fri mech op de Resultat.\",\"ph\":\"[MAIR-see feer deng en-koo-rajh-MENT. Esh free mesh op de re-zool-TAT.]\",\"r\":\"Thank you for your encouragement. I am looking forward to the result.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Du wäerts et packen! Ech sinn zefridden mat dengem Fortschrëtt.\",\"ph\":\"[Doo VAIRTS et PAK-ken! Esh zinn tse-FRID-den mat DEN-gem fort-SHRIT.]\",\"r\":\"You will manage it! I am satisfied with your progress.\"}],\"ex\":[{\"q\":\"'Ech si glécklich' means:\",\"o\":[\"I am tired\",\"I am sad\",\"I am happy\",\"I am stressed\"],\"c\":2,\"ok\":\"Correct! Ech si glécklich = I am happy\",\"no\":\"No. Ech si glécklich = I am happy\",\"exp\":\"Glécklich = happy. Traureg = sad. Midd = tired. Gestresst = stressed.\"},{\"q\":\"'Dat freet mech' means:\",\"o\":[\"That worries me\",\"That surprises me\",\"That pleases me\",\"That tires me\"],\"c\":2,\"ok\":\"Correct! Dat freet mech = That pleases me\",\"no\":\"No. Dat freet mech = That pleases me\",\"exp\":\"Freet comes from sech freeën (to be glad). Very positive expression!\"}]},{\"id\":18,\"title\":\"Bei der Post a Bank\",\"icon\":\"🏦\",\"level\":\"A1\",\"ru_title\":\"At the post office & bank\",\"type\":\"normal\",\"words\":[{\"cz\":\"E Bréif schécken\",\"ru\":\"To send a letter\",\"ph\":\"[e brayf SHAY-khen]\",\"ic\":\"✉️\"},{\"cz\":\"E Paket\",\"ru\":\"A parcel\",\"ph\":\"[e pa-KET]\",\"ic\":\"📦\"},{\"cz\":\"De Virement\",\"ru\":\"Bank transfer\",\"ph\":\"[de veer-MAHN]\",\"ic\":\"💸\"},{\"cz\":\"Mäi Kont\",\"ru\":\"My account\",\"ph\":\"[may kont]\",\"ic\":\"🏦\"},{\"cz\":\"Ech wëll Suen owehiewen\",\"ru\":\"I want to withdraw money\",\"ph\":\"[Esh vell ZOO-en OW-e-hee-ven]\",\"ic\":\"💵\"},{\"cz\":\"Wéi héich sinn d'Fraise?\",\"ru\":\"How high are the fees?\",\"ph\":\"[Vey heysh zinn d-fray-ze?]\",\"ic\":\"📊\"},{\"cz\":\"De PIN\",\"ru\":\"The PIN\",\"ph\":\"[de peen]\",\"ic\":\"🔢\"},{\"cz\":\"D'Quittung\",\"ru\":\"The receipt\",\"ph\":\"[d-KVIT-toong]\",\"ic\":\"🧾\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien! Ech wéilt e Paket op Russland schécken.\",\"ph\":\"[MOY-en! Esh VAY-elt e pa-KET op ROOS-lant SHAY-khen.]\",\"r\":\"Good morning! I would like to send a parcel to Russia.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Kee Problem. Wéi schwéier ass d'Paket?\",\"ph\":\"[Kay Pro-BLAYM. Vey SHVAY-er ass d-pa-KET?]\",\"r\":\"No problem. How heavy is the parcel?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ongeféier zwee Kilo. Wéi laang dauert et?\",\"ph\":\"[ON-ge-FAY-er tsvay KEE-lo. Vey laang DOWERT et?]\",\"r\":\"Approximately two kilograms. How long does it take?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Ongeféier zwou Wochen fir Russland. Dat mécht fofzeg Euro.\",\"ph\":\"[ON-ge-FAY-er tsvoo VOKH-en feer ROOS-lant. Dat mesht FOF-tsekh OY-ro.]\",\"r\":\"Approximately two weeks for Russia. That is fifty euros.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Merci. A kann ech hei och Geld owehiewen?\",\"ph\":\"[MAIR-see. Ah kan esh hey okh gelt OW-e-hee-ven?]\",\"r\":\"Thank you. And can I also withdraw money here?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Nee, dat muss der op der Bank oder am ATM maachen.\",\"ph\":\"[Nay, dat mooss deer op dair bank OH-der am A-T-M MAH-khen.]\",\"r\":\"No, you have to do that at the bank or ATM.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech wëll e Bankkont zu Lëtzebuerg opmaachen. Wat brauch ech?\",\"ph\":\"[Lyohn, esh vell e bank-KONT tsoo LET-tse-boork op-MAH-khen. Vat browkh esh?]\",\"r\":\"Léon, I want to open a bank account in Luxembourg. What do I need?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Du brauchst däi Pass, eng Bescheinigung vum Wunnort an e Beweis vun Akommes.\",\"ph\":\"[Doo browkst day pass, eng be-SHAY-ni-goong voom VOON-ort an e be-VAYS voon ah-KOM-mes.]\",\"r\":\"You need your passport, proof of address and proof of income.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Wéi laang dauert d'Eröffnung?\",\"ph\":\"[Vey laang DOWERT d-er-EF-noong?]\",\"r\":\"How long does the opening take?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Normalerweis eng Woch. Dir kënnt och online untrieden.\",\"ph\":\"[Nor-MAH-ler-vays eng vokh. Deer kent okh on-LEEN oon-TREED-en.]\",\"r\":\"Normally one week. You can also apply online.\"}],\"ex\":[{\"q\":\"'Ech wëll Suen owehiewen' means:\",\"o\":[\"I want to send money\",\"I want to deposit money\",\"I want to withdraw money\",\"I want to check my balance\"],\"c\":2,\"ok\":\"Correct! Owehiewen = to withdraw\",\"no\":\"No. Owehiewen = to withdraw money\",\"exp\":\"Hiewen means to lift. Owe = away. So owehiewen = to lift away = to withdraw.\"},{\"q\":\"How long does a parcel to Russia take from Luxembourg?\",\"o\":[\"3-5 days\",\"1 week\",\"2 weeks\",\"1 month\"],\"c\":2,\"ok\":\"Correct! Approximately two weeks for Russia.\",\"no\":\"No. Approximately 2 weeks for Russia\",\"exp\":\"European destinations take 3-7 days. Intercontinental typically 2-4 weeks.\"}]},{\"id\":19,\"title\":\"Telefongespréich\",\"icon\":\"📞\",\"level\":\"A1\",\"ru_title\":\"Phone conversation\",\"type\":\"normal\",\"words\":[{\"cz\":\"Hallo, hei ass...\",\"ru\":\"Hello, this is...\",\"ph\":\"[HAL-lo, hey ass]\",\"ic\":\"📞\"},{\"cz\":\"Mat weem schwätzen ech?\",\"ru\":\"Who am I speaking to?\",\"ph\":\"[Mat vaym SHVET-tsen esh?]\",\"ic\":\"🤔\"},{\"cz\":\"Kënnt Dir méi lues schwätzen?\",\"ru\":\"Can you speak more slowly?\",\"ph\":\"[Kent deer may loos SHVET-tsen?]\",\"ic\":\"🐢\"},{\"cz\":\"Ech verstinn net\",\"ru\":\"I do not understand\",\"ph\":\"[Esh fer-SHTIN net]\",\"ic\":\"😕\"},{\"cz\":\"Kënnt Dir dat widderhuelen?\",\"ru\":\"Can you repeat that?\",\"ph\":\"[Kent deer dat VID-der-hoo-len?]\",\"ic\":\"🔄\"},{\"cz\":\"Ech ruffen zeréck\",\"ru\":\"I will call back\",\"ph\":\"[Esh ROO-fen tse-REK]\",\"ic\":\"↩️\"},{\"cz\":\"Eng Noriicht hannerloossen\",\"ru\":\"To leave a message\",\"ph\":\"[eng no-RISKHT HAN-ner-lo-ssen]\",\"ic\":\"📝\"},{\"cz\":\"D'Linn ass besat\",\"ru\":\"The line is busy\",\"ph\":\"[d-lin ass be-ZAT]\",\"ic\":\"📵\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Hallo, hei ass Andrey Bychkov. Kann ech mat dem Dokter schwätzen?\",\"ph\":\"[HAL-lo, hey ass Andrey BISH-kof. Kan esh mat dem DOK-ter SHVET-tsen?]\",\"r\":\"Hello, this is Andrey Bychkov. Can I speak to the doctor?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Ee Moment, wann ech gelift. Den Dokter ass beschäftegt.\",\"ph\":\"[Ay mo-MENT, vann esh ge-LIFT. Den DOK-ter ass be-SHEF-tekht.]\",\"r\":\"One moment, please. The doctor is busy.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Kënnt ech eng Noriicht hannerloossen?\",\"ph\":\"[Kent esh eng no-RISKHT HAN-ner-lo-ssen?]\",\"r\":\"Can I leave a message?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Natierlech. Wie ruft un a wat ass de Problem?\",\"ph\":\"[Nah-TEER-lekh. Vee rooft oon ah vat ass de Pro-BLAYM?]\",\"r\":\"Of course. Who is calling and what is the problem?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech hu Kappwéi zanter dräi Deeg. Kënnt Dir méi lues schwätzen, wann ech gelift?\",\"ph\":\"[Esh hoo KAP-vay TSAN-ter dray dayg. Kent deer may loos SHVET-tsen, vann esh ge-LIFT?]\",\"r\":\"I have had a headache for three days. Can you speak more slowly, please?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Natierlech! Den Dokter wäert Iech zeréckruffen.\",\"ph\":\"[Nah-TEER-lekh! Den DOK-ter VAIRT eekh tse-REK-roo-fen.]\",\"r\":\"Of course! The doctor will call you back.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech muss en Rendez-vous telefonescht maachen. Wéi fänken ech un?\",\"ph\":\"[Lyohn, esh mooss en rahn-day-VOO te-le-fo-NESHT MAH-khen. Vey FENK-en esh oon?]\",\"r\":\"Léon, I need to make an appointment by phone. How do I start?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Soe: Moien, hei ass dein Numm. Ech wéilt en Rendez-vous maachen.\",\"ph\":\"[Zo: MOY-en, hey ass dayn noom. Esh VAY-elt en rahn-day-VOO MAH-khen.]\",\"r\":\"Say: Good morning, this is your name. I would like to make an appointment.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"A wann ech net alles verstinn?\",\"ph\":\"[Ah vann esh net AL-les fer-SHTIN?]\",\"r\":\"And if I do not understand everything?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Soe roueg: Ech verstinn net. Kënnt Dir dat widderhuelen? Dat ass normal.\",\"ph\":\"[Zo ROO-ekh: Esh fer-SHTIN net. Kent deer dat VID-der-hoo-len? Dat ass nor-MAL.]\",\"r\":\"Say calmly: I do not understand. Can you repeat that? That is completely normal.\"}],\"ex\":[{\"q\":\"How do you say 'Can you speak more slowly?' in Luxembourgish?\",\"o\":[\"Kënnt Dir méi lues schwätzen?\",\"Kënnt Dir dat widderhuelen?\",\"Ech verstinn net\",\"D'Linn ass besat\"],\"c\":0,\"ok\":\"Correct! Kënnt Dir méi lues schwätzen? = Can you speak more slowly?\",\"no\":\"No. More slowly = Kënnt Dir méi lues schwätzen?\",\"exp\":\"Lues = slow. Méi = more. Very useful on the phone!\"},{\"q\":\"'Ech verstinn net' means:\",\"o\":[\"I am not free\",\"I do not agree\",\"I do not understand\",\"I cannot come\"],\"c\":2,\"ok\":\"Correct! Ech verstinn net = I do not understand\",\"no\":\"No. Ech verstinn net = I do not understand\",\"exp\":\"Verstinn = to understand. Do not be embarrassed to say this!\"}]},{\"id\":20,\"title\":\"A1 Ofschlossdialog\",\"icon\":\"🎓\",\"level\":\"A1\",\"ru_title\":\"A1 Final dialogue\",\"type\":\"normal\",\"words\":[{\"cz\":\"Ech hu vill geléiert\",\"ru\":\"I have learnt a lot\",\"ph\":\"[Esh hoo fill ge-LAIRT]\",\"ic\":\"📚\"},{\"cz\":\"Mäi Fortschrëtt\",\"ru\":\"My progress\",\"ph\":\"[May fort-SHRIT]\",\"ic\":\"📈\"},{\"cz\":\"Ech sinn bereet\",\"ru\":\"I am ready\",\"ph\":\"[Esh zinn be-RAYT]\",\"ic\":\"✅\"},{\"cz\":\"Den Test uleeden\",\"ru\":\"To take the test\",\"ph\":\"[den test oo-LAY-den]\",\"ic\":\"📋\"},{\"cz\":\"Ech gi weider\",\"ru\":\"I continue\",\"ph\":\"[Esh gee VAY-der]\",\"ic\":\"➡️\"},{\"cz\":\"Merci villmols!\",\"ru\":\"Thank you very much!\",\"ph\":\"[MAIR-see FILL-mols]\",\"ic\":\"🙏\"},{\"cz\":\"Vill Glück!\",\"ru\":\"Good luck!\",\"ph\":\"[Fill glik]\",\"ic\":\"🍀\"},{\"cz\":\"Bis d'nächst Kéier!\",\"ru\":\"Until next time!\",\"ph\":\"[Biss d-NEKH-st KAY-er]\",\"ic\":\"👋\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Andrey, du hues zwanzeg Lektiounen ofgeschloss! Dat ass super!\",\"ph\":\"[Andrey, doo hoos TSVANTS-ekh lek-TSYO-nen of-ge-SHLOSS! Dat ass ZOO-per!]\",\"r\":\"Andrey, you have completed twenty lessons! That is super!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Merci, Léon! Ech hu vill geléiert. Ech schwätzen elo vill besser.\",\"ph\":\"[MAIR-see, Lyohn! Esh hoo fill ge-LAIRT. Esh SHVET-tsen EH-lo fill BES-ser.]\",\"r\":\"Thank you, Léon! I have learnt a lot. I speak much better now.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Du bass wierklech gutt. Menge Dir, Dir sidd bereet fir den Sproochentest?\",\"ph\":\"[Doo bass VEER-klekh goot. MENG-e deer, deer zitt be-RAYT feer den SHPROH-khen-test?]\",\"r\":\"You are genuinely very good. Do you think you are ready for the Sproochentest?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech mengen jo! Ech wäert den Test uleeden dëse Méindeg.\",\"ph\":\"[Esh MENG-en yo! Esh VAIRT den test OO-lay-den DEH-se MAYN-dekh.]\",\"r\":\"I think yes! I will take the test this Monday.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Vill Glück, Andrey! Du wäerts et packen!\",\"ph\":\"[Fill glik, Andrey! Doo VAIRTS et PAK-ken!]\",\"r\":\"Good luck, Andrey! You will manage it!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Merci villmols fir alles! Bis d'nächst Kéier, Léon!\",\"ph\":\"[MAIR-see FILL-mols feer AL-les! Biss d-NEKH-st KAY-er, Lyohn!]\",\"r\":\"Thank you very much for everything! Until next time, Léon!\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech wëll mäi Lëtzebuergesch op A2 bréngen. Wat recommandéiers du?\",\"ph\":\"[Lyohn, esh vell may LET-tse-ber-gesh op A-TSVAY BREN-gen. Vat re-ko-man-DAYRS doo?]\",\"r\":\"Léon, I want to bring my Luxembourgish to A2. What do you recommend?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Iwwer all Dag mat Lëtzebuerger Leit. Kuck Tele Lëtzebuerg. Lies d'Lëtzebuerger Wort.\",\"ph\":\"[EE-ver all dahg mat LET-tse-ber-ger layt. Kook Te-le LET-tse-boork. Lees d-LET-tse-ber-ger vort.]\",\"r\":\"Speak with Luxembourgers every day. Watch Tele Lëtzebuerg. Read the Luxemburger Wort.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Ech ginn och an den Integratiouns-Sproochkurs.\",\"ph\":\"[Esh ginn okh an den in-te-gra-TSYOONS-shprokh-koors.]\",\"r\":\"I will also go to the integration language course.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Excellent Iddi! Du wäerts A2 séier erreechen. Vill Erfolleg!\",\"ph\":\"[Ek-se-LANT i-DAY! Doo VAIRTS A-TSVAY ZAY-er er-RAY-khen. Fill er-FOLK!]\",\"r\":\"Excellent idea! You will reach A2 quickly. Much success!\"}],\"ex\":[{\"q\":\"'Vill Glück!' means:\",\"o\":[\"Well done!\",\"Good luck!\",\"Thank you!\",\"See you soon!\"],\"c\":1,\"ok\":\"Correct! Vill Glück = Good luck!\",\"no\":\"No. Vill Glück = Good luck!\",\"exp\":\"Vill = much/many. Glück = luck. Very common for exams, sports, interviews!\"},{\"q\":\"'Ech sinn bereet' means:\",\"o\":[\"I am tired\",\"I am happy\",\"I am ready\",\"I am finished\"],\"c\":2,\"ok\":\"Correct! Ech sinn bereet = I am ready\",\"no\":\"No. Ech sinn bereet = I am ready\",\"exp\":\"Bereet = ready. Ech sinn bereet fir den Sproochentest!\"}]},{\"id\":21,\"title\":\"Aarbecht kréien\",\"icon\":\"🎯\",\"level\":\"A1\",\"ru_title\":\"Getting a job — interview\",\"type\":\"normal\",\"words\":[{\"cz\":\"D'Entrevue\",\"ru\":\"The interview\",\"ph\":\"[d-ahn-tre-VEW]\",\"ic\":\"🤝\"},{\"cz\":\"Meng Stäerkten\",\"ru\":\"My strengths\",\"ph\":\"[meng SHTAIRT-en]\",\"ic\":\"💪\"},{\"cz\":\"Ech hunn Erfarung mat...\",\"ru\":\"I have experience with...\",\"ph\":\"[Esh hoon er-FAH-roong mat]\",\"ic\":\"📋\"},{\"cz\":\"Ech si motivéiert\",\"ru\":\"I am motivated\",\"ph\":\"[Esh zee mo-ti-VAIRT]\",\"ic\":\"🔥\"},{\"cz\":\"Wéini kann ech ufänken?\",\"ru\":\"When can I start?\",\"ph\":\"[VAY-nee kan esh OO-fenk-en?]\",\"ic\":\"📅\"},{\"cz\":\"De Loundschnëtt\",\"ru\":\"The salary range\",\"ph\":\"[de LOWND-shnit]\",\"ic\":\"💶\"},{\"cz\":\"Ech si flexibel\",\"ru\":\"I am flexible\",\"ph\":\"[Esh zee flek-SEE-bel]\",\"ic\":\"🔄\"},{\"cz\":\"Mäin Zil\",\"ru\":\"My goal\",\"ph\":\"[mayn tseel]\",\"ic\":\"🎯\"}],\"sd\":[{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Moien, Herr Bychkov. Sëtzt Iech, wann ech gelift. Stell dech mol kuerz vir.\",\"ph\":\"[MOY-en, Herr BISH-kof. Zetts eekh, vann esh ge-LIFT. Shtel desh mol koorts feer.]\",\"r\":\"Good morning, Mr Bychkov. Please take a seat. Briefly introduce yourself.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien! Ech heeschen Andrey Bychkov. Ech sinn IT-Spezialist mat zéng Joer Erfarung.\",\"ph\":\"[MOY-en! Esh HEY-shen Andrey BISH-kof. Esh zinn I-T shpe-tsya-LIST mat tseng yoar er-FAH-roong.]\",\"r\":\"Good morning! My name is Andrey Bychkov. I am an IT specialist with ten years of experience.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Excellent! Wat si Är Stäerkten?\",\"ph\":\"[Ek-se-LANT! Vat zee air SHTAIRT-en?]\",\"r\":\"Excellent! What are your strengths?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech si motivéiert, flexibel a schaffend am Team. An ech schwätzen dräi Sproochen.\",\"ph\":\"[Esh zee mo-ti-VAIRT, flek-SEE-bel ah SHAF-fent am team. An esh SHVET-tsen dray SHPROH-khen.]\",\"r\":\"I am motivated, flexible and work well in a team. And I speak three languages.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Super! Wéini kënnt Dir ufänken?\",\"ph\":\"[ZOO-per! VAY-nee kent deer OO-fenk-en?]\",\"r\":\"Great! When can you start?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech kann am éischte Mäerz ufänken. Mäin Zil ass bei Iech laang ze schaffen.\",\"ph\":\"[Esh kan am AYsht-en MAIRTS OO-fenk-en. Mayn tseel ass bay eekh laang tse SHAF-fen.]\",\"r\":\"I can start on the first of March. My goal is to work with you for a long time.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech hunn eng Entrevue morgen. Wat soll ech unzéien?\",\"ph\":\"[Lyohn, esh hoon eng ahn-tre-VEW MOR-gen. Vat zol esh OON-tsay-en?]\",\"r\":\"Léon, I have an interview tomorrow. What should I wear?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Formell Kleeder. Zu Lëtzebuerg ass de Business casual Stil Standard.\",\"ph\":\"[For-MEL KLAY-der. Tsoo LET-tse-boork ass de busi-ness KAH-zhu-al shteel shtan-DART.]\",\"r\":\"Smart clothes. In Luxembourg business casual is the standard.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"A soll ech op Lëtzebuergesch oder Franséisch schwätzen?\",\"ph\":\"[Ah zol esh op LET-tse-ber-gesh OH-der fran-ZAY-ish SHVET-tsen?]\",\"r\":\"And should I speak in Luxembourgish or French?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Fänk op Lëtzebuergesch un — dat imponéiert. Si wäerten op Franséisch wiesselen wann néideg.\",\"ph\":\"[Fenk op LET-tse-ber-gesh oon — dat im-po-NEERT. Zee VAIRT-en op fran-ZAY-ish VAYS-elen vann NAY-dekh.]\",\"r\":\"Start in Luxembourgish — that impresses. They will switch to French if needed.\"}],\"ex\":[{\"q\":\"'Ech si motivéiert' means:\",\"o\":[\"I am tired\",\"I am experienced\",\"I am motivated\",\"I am ready\"],\"c\":2,\"ok\":\"Correct! Ech si motivéiert = I am motivated\",\"no\":\"No. Ech si motivéiert = I am motivated\",\"exp\":\"Motivéiert comes from French motivé. Use it in interviews!\"},{\"q\":\"When starting a job interview in Luxembourg, it is recommended to:\",\"o\":[\"Speak only French\",\"Speak only German\",\"Start in Luxembourgish to impress\",\"Speak English\"],\"c\":2,\"ok\":\"Correct! Starting in Luxembourgish impresses Luxembourgish employers!\",\"no\":\"No. Starting in Luxembourgish makes a great first impression!\",\"exp\":\"Showing you make the effort to speak Luxembourgish — even at A1 — shows respect for the culture.\"}]},{\"id\":22,\"title\":\"Beim Dokter detailléiert\",\"icon\":\"🩺\",\"level\":\"A1\",\"ru_title\":\"At the doctor — in detail\",\"type\":\"normal\",\"words\":[{\"cz\":\"Ech hu Schmerzen hei\",\"ru\":\"I have pain here\",\"ph\":\"[Esh hoo SHMERT-tsen hey]\",\"ic\":\"😖\"},{\"cz\":\"Zanter wéini?\",\"ru\":\"Since when?\",\"ph\":\"[TSAN-ter VAY-nee?]\",\"ic\":\"⏳\"},{\"cz\":\"D'Rezept\",\"ru\":\"The prescription\",\"ph\":\"[d-re-TSEPT]\",\"ic\":\"💊\"},{\"cz\":\"Dreemol den Dag\",\"ru\":\"Three times a day\",\"ph\":\"[DRAY-mol den dahg]\",\"ic\":\"⏰\"},{\"cz\":\"Ech si schwanger\",\"ru\":\"I am pregnant\",\"ph\":\"[Esh zee SHVANG-er]\",\"ic\":\"🤰\"},{\"cz\":\"Eng Allergie\",\"ru\":\"An allergy\",\"ph\":\"[eng al-er-ZHEE]\",\"ic\":\"⚠️\"},{\"cz\":\"D'Operatioun\",\"ru\":\"The operation\",\"ph\":\"[d-o-pe-rah-TSYOON]\",\"ic\":\"🏥\"},{\"cz\":\"Versicherung\",\"ru\":\"Insurance\",\"ph\":\"[fer-ZISH-e-roong]\",\"ic\":\"📋\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien, Dokter. Ech hu staark Schmerzen am Réck zanter zwou Wochen.\",\"ph\":\"[MOY-en, DOK-ter. Esh hoo shtaark SHMERT-tsen am rek TSAN-ter tsvoo VOKH-en.]\",\"r\":\"Good morning, Doctor. I have had severe back pain for two weeks.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Zanter zwou Wochen? Wann deet et Iech genee wéi?\",\"ph\":\"[TSAN-ter tsvoo VOKH-en? Vann dayt et eekh ge-NOO vay?]\",\"r\":\"For two weeks? When does it hurt exactly?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Besonnesch moies wann ech opstinn. An wann ech laang setzen.\",\"ph\":\"[Be-ZON-esh MOY-es vann esh OP-shtinn. An vann esh laang ZET-tsen.]\",\"r\":\"Especially in the morning when I get up. And when I sit for a long time.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Verstanen. Hutt Dir eng Versicherung?\",\"ph\":\"[Fer-SHTAN-en. Hoot deer eng fer-ZISH-e-roong?]\",\"r\":\"Understood. Do you have insurance?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Jo, ech hunn d'CNS — d'Lëtzebuerger Krankekeess.\",\"ph\":\"[Yo, esh hoon d-tsay-en-ES — d-LET-tse-ber-ger KRANK-e-kays.]\",\"r\":\"Yes, I have the CNS — the Luxembourg health insurance.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Gutt. Ech schreiwe Iech e Rezept. Dreemol den Dag no den Iessen.\",\"ph\":\"[Goot. Esh SHRAY-ve eekh e re-TSEPT. DRAY-mol den dahg no den EES-sen.]\",\"r\":\"Good. I will write you a prescription. Three times a day after meals.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Dokter, ech hunn eng Allergie géint Penicillin. Dat ass wichteg.\",\"ph\":\"[DOK-ter, esh hoon eng al-er-ZHEE gayn Pe-ni-ZI-lin. Dat ass VISH-tekh.]\",\"r\":\"Doctor, I have an allergy to penicillin. That is important.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Merci fir d'Informatioun. Ech notéieren dat am Dossier.\",\"ph\":\"[MAIR-see feer d-in-for-mah-TSYOON. Esh no-TAY-ren dat am dos-YAY.]\",\"r\":\"Thank you for the information. I will note that in the file.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"A muss ech eng Operatioun maachen?\",\"ph\":\"[Ah mooss esh eng o-pe-rah-TSYOON MAH-khen?]\",\"r\":\"And do I need an operation?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Nee, dat ass net néideg. Mir fänken mat Physiotherapie un.\",\"ph\":\"[Nay, dat ass net NAY-dekh. Meer FENK-en mat fee-zyo-te-rah-PEE oon.]\",\"r\":\"No, that is not necessary. We will start with physiotherapy.\"}],\"ex\":[{\"q\":\"'Dreemol den Dag' means:\",\"o\":[\"Once a day\",\"Twice a day\",\"Three times a day\",\"Every three days\"],\"c\":2,\"ok\":\"Correct! Dreemol den Dag = three times a day\",\"no\":\"No. Dreemol den Dag = three times a day\",\"exp\":\"Mol = time/instance. Eemol = once, zweemol = twice, dreemol = three times.\"},{\"q\":\"What is 'CNS' in Luxembourg?\",\"o\":[\"A train company\",\"A bank\",\"The national health insurance\",\"A government office\"],\"c\":2,\"ok\":\"Correct! CNS = Caisse Nationale de Santé — the Luxembourg health insurance!\",\"no\":\"No. CNS = the Luxembourg national health insurance\",\"exp\":\"The CNS is Luxembourg's main statutory health insurance fund. All residents are covered!\"}]},{\"id\":23,\"title\":\"Um Gemengamt\",\"icon\":\"🏛️\",\"level\":\"A1\",\"ru_title\":\"At the government office\",\"type\":\"normal\",\"words\":[{\"cz\":\"D'Gemeng\",\"ru\":\"The municipality\",\"ph\":\"[d-ge-MENG]\",\"ic\":\"🏛️\"},{\"cz\":\"D'Persounaldaten\",\"ru\":\"Personal data\",\"ph\":\"[d-per-zo-NAL-dah-ten]\",\"ic\":\"📋\"},{\"cz\":\"D'Meldung\",\"ru\":\"The registration\",\"ph\":\"[d-MEL-doong]\",\"ic\":\"📝\"},{\"cz\":\"Ech wëll mech umellen\",\"ru\":\"I want to register\",\"ph\":\"[Esh vell mesh OO-mel-len]\",\"ic\":\"✍️\"},{\"cz\":\"De Formulaire\",\"ru\":\"The form\",\"ph\":\"[de for-moo-LAIR]\",\"ic\":\"📄\"},{\"cz\":\"D'Signature\",\"ru\":\"The signature\",\"ph\":\"[d-sig-nah-TEWR]\",\"ic\":\"✒️\"},{\"cz\":\"Wéini ass dat fäerdeg?\",\"ru\":\"When will that be ready?\",\"ph\":\"[VAY-nee ass dat FAIR-dekh?]\",\"ic\":\"⏰\"},{\"cz\":\"Mäi Wunnzëmmer\",\"ru\":\"My residential certificate\",\"ph\":\"[may VOON-tsim-mer]\",\"ic\":\"🏠\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Moien! Ech wëll mech hei zu Lëtzebuerg umellen.\",\"ph\":\"[MOY-en! Esh vell mesh hey tsoo LET-tse-boork OO-mel-len.]\",\"r\":\"Good morning! I want to register here in Luxembourg.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Moien! Fëllt dëse Formulaire aus, wann ech gelift. Braucht Dir Hëllef?\",\"ph\":\"[MOY-en! Felt DE-ze for-moo-LAIR ows, vann esh ge-LIFT. Browkt deer HEL-lef?]\",\"r\":\"Good morning! Please fill in this form. Do you need help?\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Jo, e bësschen. Ech verstinn dëst Feld net.\",\"ph\":\"[Yo, e BIS-shen. Esh fer-SHTIN dest felt net.]\",\"r\":\"Yes, a little. I do not understand this field.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dëst Feld ass fir Ären Datum vun Arrivée zu Lëtzebuerg.\",\"ph\":\"[Dest felt ass feer AIR-en DAH-toom voon ah-ri-VAY tsoo LET-tse-boork.]\",\"r\":\"This field is for your date of arrival in Luxembourg.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ah, ech verstinn! Wéini ass meng Meldung fäerdeg?\",\"ph\":\"[Ah, esh fer-SHTIN! VAY-nee ass meng MEL-doong FAIR-dekh?]\",\"r\":\"Ah, I understand! When will my registration be ready?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"An zwou bis dräi Woche kritt Dir Är Attestatioun per Post.\",\"ph\":\"[An tsvoo biss dray VOKH-e krit deer air at-tes-tah-TSYOON per post.]\",\"r\":\"In two to three weeks you will receive your attestation by post.\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, ech muss meng Adress ënneren. Wéi maachen ech dat?\",\"ph\":\"[Lyohn, esh mooss meng ah-DRES EN-ner-en. Vey MAH-khen esh dat?]\",\"r\":\"Léon, I need to change my address. How do I do that?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Gou op d'Gemeng oder maach et online iwwer MyGuichet.lu.\",\"ph\":\"[Go op d-ge-MENG OH-der mahkh et ON-leen EE-ver my-GISH-et-loo.]\",\"r\":\"Go to the municipality office or do it online via MyGuichet.lu.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Wéi laang hunn ech Zäit fir déi Ënnerzeesung?\",\"ph\":\"[Vey laang hoon esh tsayt feer day EN-ner-tsay-soong?]\",\"r\":\"How much time do I have for the registration change?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dir musst dat bannent enger Woch no dem Ëmzuch mellen.\",\"ph\":\"[Deer moost dat BAN-nent EN-ger vokh no dem EM-tsookh MEL-len.]\",\"r\":\"You must report it within one week of moving.\"}],\"ex\":[{\"q\":\"'Ech wëll mech umellen' means:\",\"o\":[\"I want to move house\",\"I want to register\",\"I want to apply for citizenship\",\"I want to change my name\"],\"c\":1,\"ok\":\"Correct! Ech wëll mech umellen = I want to register\",\"no\":\"No. Umellen = to register at the municipality\",\"exp\":\"Registering at the Gemeng is one of the first things you must do when moving to Luxembourg.\"},{\"q\":\"What is 'MyGuichet.lu'?\",\"o\":[\"A shopping website\",\"Luxembourg's online government portal\",\"A language learning app\",\"A bank website\"],\"c\":1,\"ok\":\"Correct! MyGuichet.lu is Luxembourg's official online government portal!\",\"no\":\"No. MyGuichet.lu is Luxembourg's online government portal\",\"exp\":\"MyGuichet.lu allows you to complete most government formalities online.\"}]},{\"id\":24,\"title\":\"Schachclub Tournoi\",\"icon\":\"🏅\",\"level\":\"A1\",\"ru_title\":\"Chess: Tournament\",\"type\":\"chess\",\"words\":[{\"cz\":\"D'Turniertabelle\",\"ru\":\"The tournament standings\",\"ph\":\"[d-toor-NEER-tah-bel-e]\",\"ic\":\"📊\"},{\"cz\":\"Eng Ronnen\",\"ru\":\"A round\",\"ph\":\"[eng RON-nen]\",\"ic\":\"🔄\"},{\"cz\":\"D'Zeitkontroll\",\"ru\":\"Time control\",\"ph\":\"[d-TSAYT-kon-trol]\",\"ic\":\"⏱️\"},{\"cz\":\"Ech hu gewonnen!\",\"ru\":\"I won!\",\"ph\":\"[Esh hoo ge-VON-nen]\",\"ic\":\"🏆\"},{\"cz\":\"Halbfinall\",\"ru\":\"Semi-final\",\"ph\":\"[HALB-fi-nal]\",\"ic\":\"🥈\"},{\"cz\":\"Final\",\"ru\":\"Final\",\"ph\":\"[fi-NAL]\",\"ic\":\"🥇\"},{\"cz\":\"De Gaang\",\"ru\":\"The opening (chess)\",\"ph\":\"[de gang]\",\"ic\":\"♟️\"},{\"cz\":\"Ech offréieren Remis\",\"ru\":\"I offer a draw\",\"ph\":\"[Esh of-RAY-ren re-MEE]\",\"ic\":\"🤝\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Léon! Mir hunn haut siwen Ronnen am Tournoi!\",\"ph\":\"[Lyohn! Meer hoon howt ZEE-ven RON-nen am toor-NOY!]\",\"r\":\"Léon! Today we have seven rounds in the tournament!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Jo! Ech kann et kaum erwaarden. D'Zeitkontroll ass 90 Minutten.\",\"ph\":\"[Yo! Esh kan et kowm er-VAR-den. D-TSAYT-kon-trol ass noin-tsekh mi-NOOT-ten.]\",\"r\":\"Yes! I can hardly wait. The time control is 90 minutes.\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech hunn gewonnen an den éischte véier Ronnen! Ech sinn am Halbfinall.\",\"ph\":\"[Esh hoon ge-VON-nen an den AYSh-ten FAY-er RON-nen! Esh zinn am HALB-fi-nal.]\",\"r\":\"I won in the first four rounds! I am in the semi-final.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Fantastisch! Ech och! Mir kéinte géint openeen spillen am Final!\",\"ph\":\"[Fan-TAS-tish! Esh okh! Meer KAY-te gayn o-pe-NAN shpil-len am fi-NAL!]\",\"r\":\"Fantastic! Me too! We could play against each other in the final!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Da spillen déi bescht zwee Spilleren um Enn. Ech offréieren Iech kee Remis!\",\"ph\":\"[Dan SHPIL-len day beshts tsvay SHPIL-ler-en oom end. Esh of-RAY-ren eekh kay re-MEE!]\",\"r\":\"Then the two best players play at the end. I offer you no draw!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Super! Dann gewënnt dee Bescht. Vill Erfolleg, Andrey!\",\"ph\":\"[ZOO-per! Dan ge-VINT day beshts. Fill er-FOLK, Andrey!]\",\"r\":\"Great! Then the best one wins. Much success, Andrey!\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Léon, wat ass deen beschte Gaang géint d'Sicilianeschen Verteidegung?\",\"ph\":\"[Lyohn, vat ass dayn BESH-ten gang gayn d-zi-zi-LYA-nes-shen fer-TAY-de-goong?]\",\"r\":\"Léon, what is the best opening against the Sicilian Defence?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Dat hänkt of vum Stil! De Najdorf Variante ass aggressiv. De Scheveningen méi positionnell.\",\"ph\":\"[Dat henkt of voom shteel! De NAY-dorf va-ryan-te ass ag-res-SEEF. De she-ven-ING-en may po-zi-tyo-NEL.]\",\"r\":\"That depends on style! The Najdorf variation is aggressive. The Scheveningen more positional.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Ech spillen léiwer positionnell. Ech hunn net genuch Zäit fir déif Varianten auszerechnen.\",\"ph\":\"[Esh SHPIL-len LAY-ver po-zi-tyo-NEL. Esh hoon net ge-NOOKH tsayt feer dayf va-ryan-ten OWS-tse-rekh-nen.]\",\"r\":\"I prefer to play positionally. I do not have enough time to calculate deep variations.\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Da probéier de Ruhige Sizilianer — ee solide System mat manner Taktik.\",\"ph\":\"[Dan pro-BAY-er de ROO-ige zi-zi-LYA-ner — ay zo-LEE-de sis-TEM mat MAN-ner TAK-tik.]\",\"r\":\"Then try the Quiet Sicilian — a solid system with less tactics.\"}],\"ex\":[{\"q\":\"'Ech hu gewonnen!' means:\",\"o\":[\"I lost!\",\"I drew!\",\"I won!\",\"I resigned!\"],\"c\":2,\"ok\":\"Correct! Ech hu gewonnen = I won!\",\"no\":\"No. Gewonnen = won\",\"exp\":\"Gewonnen = won (past tense of gewannen). The sweetest word in chess!\"},{\"q\":\"'Ech offréieren Remis' means:\",\"o\":[\"I offer a prize\",\"I resign\",\"I offer a draw\",\"I accept your offer\"],\"c\":2,\"ok\":\"Correct! Ech offréieren Remis = I offer a draw\",\"no\":\"No. Offréieren Remis = offer a draw\",\"exp\":\"Remis from French = draw. A key phrase in chess!\"}]},{\"id\":25,\"title\":\"Ofschlossdialog A1 + F1 + Schach\",\"icon\":\"🏁\",\"level\":\"A1\",\"ru_title\":\"A1 Final: F1 + Chess\",\"type\":\"f1\",\"words\":[{\"cz\":\"D'Sproochentest-Zertifikat\",\"ru\":\"The Sproochentest certificate\",\"ph\":\"[d-SHPROH-khen-test-tser-ti-fi-KAT]\",\"ic\":\"🎓\"},{\"cz\":\"D'Lëtzebuerger Biergerschaft\",\"ru\":\"Luxembourg citizenship\",\"ph\":\"[d-LET-tse-ber-ger BEER-ger-shaft]\",\"ic\":\"🇱🇺\"},{\"cz\":\"Ech hu bestanen!\",\"ru\":\"I passed!\",\"ph\":\"[Esh hoo be-SHTAN-en]\",\"ic\":\"🎉\"},{\"cz\":\"Ech feieren!\",\"ru\":\"I am celebrating!\",\"ph\":\"[Esh FAY-ren]\",\"ic\":\"🥂\"},{\"cz\":\"Merci Lëtzebuerg!\",\"ru\":\"Thank you Luxembourg!\",\"ph\":\"[MAIR-see LET-tse-boork]\",\"ic\":\"❤️\"},{\"cz\":\"Ech sinn Lëtzebuerger!\",\"ru\":\"I am a Luxembourger!\",\"ph\":\"[Esh zinn LET-tse-ber-ger]\",\"ic\":\"🏅\"},{\"cz\":\"Grand Prix zu Lëtzebuerg?\",\"ru\":\"Grand Prix in Luxembourg?\",\"ph\":\"[gran pree tsoo LET-tse-boork?]\",\"ic\":\"🏎️\"},{\"cz\":\"Schachmatt, Lëtzebuerg!\",\"ru\":\"Checkmate, Luxembourg!\",\"ph\":\"[SHAKH-mat, LET-tse-boork!]\",\"ic\":\"♟️\"}],\"sd\":[{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"LÉON! Ech hu bestanen! Ech hu mäi Sproochentest-Zertifikat!\",\"ph\":\"[Lyohn! Esh hoo be-SHTAN-en! Esh hoo may SHPROH-khen-test-tser-ti-fi-KAT!]\",\"r\":\"LÉON! I passed! I have my Sproochentest certificate!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Andrey!! Félicitatiounen!!! Dat ass fantastisch!! Ech sinn esou glécklech fir dech!\",\"ph\":\"[Andrey!! Fay-li-zi-tah-TSYO-nen!!! Dat ass fan-TAS-tish!! Esh zinn EH-zo GLEK-lekh feer desh!]\",\"r\":\"Andrey!! Congratulations!!! That is fantastic!! I am so happy for you!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Ech feieren haut! An déi nächst Etapp ass d'Biergerschaft!\",\"ph\":\"[Esh FAY-ren howt! An day NEKH-st eh-TAP ass d-BEER-ger-shaft!]\",\"r\":\"I am celebrating today! And the next step is citizenship!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Du wäerts eng excellente Lëtzebuerger sinn! E Glas Crémant fir dech!\",\"ph\":\"[Doo VAIRTS eng ek-se-LANT-e LET-tse-ber-ger zinn! E glas KRAY-mant feer desh!]\",\"r\":\"You will be an excellent Luxembourger! A glass of Crémant for you!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Merci Lëtzebuerg! An elo — fannen mir eng Course fir ze kucken! A Schach spillen!\",\"ph\":\"[MAIR-see LET-tse-boork! An EH-lo — FAN-nen meer eng KOORS feer tse KOOK-en! Ah shakh SHPIL-len!]\",\"r\":\"Thank you Luxembourg! And now — let us find a race to watch! And play chess!\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Schachmatt, Lëtzebuerg-Test! Andrey ass elo eng vun eis!\",\"ph\":\"[SHAKH-mat, LET-tse-boork-test! Andrey ass EH-lo eng voon ays!]\",\"r\":\"Checkmate, Luxembourg test! Andrey is now one of us!\"}],\"jd\":[{\"w\":\"J\",\"n\":\"John\",\"t\":\"Andrey, du hues et geschaft! Ech sinn esou gespannt op mäin eegene Sproochentest!\",\"ph\":\"[Andrey, doo hoos et ge-SHAFT! Esh zinn EH-zo ge-SHPANT op mayn AY-ge-nen SHPROH-khen-test!]\",\"r\":\"Andrey, you made it! I am so excited about my own Sproochentest!\"},{\"w\":\"A\",\"n\":\"Andrey\",\"t\":\"Du schaffs dat och, John! Deng Lëtzebuergesch ass vill besser ewéi mäint wor.\",\"ph\":\"[Doo shaffs dat okh, John! Deng LET-tse-ber-gesh ass fill BES-ser e-VAY maynts vor.]\",\"r\":\"You will manage it too, John! Your Luxembourgish is much better than mine was.\"},{\"w\":\"J\",\"n\":\"John\",\"t\":\"Mir freeën eis béid. Léon, wat ass däin nächste Schritt?\",\"ph\":\"[Meer FRAY-en ees bayd. Lyohn, vat ass dayn NEKH-sten shrit?]\",\"r\":\"We are both pleased. Léon, what is your next step?\"},{\"w\":\"L\",\"n\":\"Léon\",\"t\":\"Ech preparéiere weider A2-Lektiounen. D'Rees geet weider! Vill Erfolleg!\",\"ph\":\"[Esh pre-pa-RAY-re VAY-der A-TSVAY-lek-TSYO-nen. D-rays gate VAY-der! Fill er-FOLK!]\",\"r\":\"I am preparing more A2 lessons. The journey continues! Much success!\"}],\"ex\":[{\"q\":\"'Ech hu bestanen!' means:\",\"o\":[\"I failed!\",\"I am ready!\",\"I passed!\",\"I finished!\"],\"c\":2,\"ok\":\"Correct! Bestanen = passed the test!\",\"no\":\"No. Bestanen = passed the test\",\"exp\":\"Bestanen comes from bestoen (to pass). The moment every Sproochentest candidate dreams of!\"},{\"q\":\"What is 'Crémant' in Luxembourg?\",\"o\":[\"A type of cheese\",\"A sparkling wine made in Luxembourg\",\"A chess opening\",\"A type of bread\"],\"c\":1,\"ok\":\"Correct! Crémant de Luxembourg is a local sparkling wine!\",\"no\":\"No. Crémant de Luxembourg is a local sparkling wine!\",\"exp\":\"Luxembourg produces excellent wines and Crémant in the Moselle valley. Perfect for celebrations!\"}]}]");
+var EXAM_QUESTIONS = JSON.parse("[{\"id\":1,\"type\":\"listen\",\"q\":\"Léon seet: Moien! Wéi geet et? Wat äntwerts du?\",\"hint\":\"Léon greets you and asks how you are\",\"audio\":\"Moien! Wéi geet et?\",\"o\":[\"Et geet mir gutt, merci!\",\"Jo, ech sinn hei.\",\"Äddi, Léon!\",\"Ech sinn krank.\"],\"c\":0,\"ok\":\"Correct! Et geet mir gutt, merci!\",\"no\":\"No. Reply: Et geet mir gutt, merci!\",\"exp\":\"Wéi geet et? = How are you? Reply: Et geet mir gutt, merci!\"},{\"id\":2,\"type\":\"vocab\",\"q\":\"Wat bedeit D'Gemeng?\",\"hint\":\"A place for official business and registration\",\"o\":[\"The school\",\"The hospital\",\"The municipality office\",\"The police\"],\"c\":2,\"ok\":\"Correct! D'Gemeng = municipality office\",\"no\":\"No. D'Gemeng = the municipality\",\"exp\":\"D'Gemeng is where you register your address and handle local government business.\"},{\"id\":3,\"type\":\"listen\",\"q\":\"Wéi seet ee Goodbye op Lëtzebuergesch?\",\"hint\":\"A common farewell in Luxembourg\",\"audio\":\"Äddi! Bis geschwënn!\",\"o\":[\"Moien\",\"Merci\",\"Äddi\",\"Wann ech gelift\"],\"c\":2,\"ok\":\"Correct! Äddi = Goodbye!\",\"no\":\"No. Goodbye = Äddi\",\"exp\":\"Äddi is the typical Luxembourgish goodbye. Bis geschwënn = See you soon!\"},{\"id\":4,\"type\":\"grammar\",\"q\":\"Complete: Ech ___ zu Lëtzebuerg.\",\"hint\":\"I [verb] in Luxembourg — about where you live\",\"o\":[\"ginn\",\"wunnen\",\"schwätzen\",\"schaffen\"],\"c\":1,\"ok\":\"Correct! Wunnen = to live\",\"no\":\"No. To live = wunnen\",\"exp\":\"Wunnen = to live/reside. Essential verb for the Sproochentest!\"},{\"id\":5,\"type\":\"vocab\",\"q\":\"Den Transport zu Lëtzebuerg ass...\",\"hint\":\"A special fact about Luxembourg transport\",\"o\":[\"deier (expensive)\",\"gratis (free)\",\"nëmme fir Bierger\",\"lues (slow)\"],\"c\":1,\"ok\":\"Correct! Public transport is FREE since 2020!\",\"no\":\"No. Transport = gratis (free)!\",\"exp\":\"Since 2020 Luxembourg is the first country with fully free national public transport!\"},{\"id\":6,\"type\":\"listen\",\"q\":\"Léon freet: Wéi heeschs du? Wat soe mir?\",\"hint\":\"Léon is asking your name\",\"audio\":\"Wéi heeschs du?\",\"o\":[\"Ech schwätzen Lëtzebuergesch.\",\"Ech kommen aus Russland.\",\"Ech heeschen Andrey.\",\"Et geet mir gutt.\"],\"c\":2,\"ok\":\"Correct! Ech heeschen Andrey.\",\"no\":\"No. Reply: Ech heeschen [name]\",\"exp\":\"Wéi heeschs du? = What is your name?\"},{\"id\":7,\"type\":\"grammar\",\"q\":\"Choose the correct word: Ech ___ Lëtzebuergesch.\",\"hint\":\"I [verb] Luxembourgish\",\"o\":[\"iessen\",\"schwätzen\",\"wunnen\",\"kommen\"],\"c\":1,\"ok\":\"Correct! Schwätzen = to speak\",\"no\":\"No. To speak = schwätzen\",\"exp\":\"Ech schwätzen en bësschen Lëtzebuergesch = I speak a little Luxembourgish.\"},{\"id\":8,\"type\":\"vocab\",\"q\":\"Wat ass de Lëtzebuerger Nationalgeriicht?\",\"hint\":\"The traditional national dish of Luxembourg\",\"o\":[\"Sauerkraut mat Wunscht\",\"Judd mat Gaardebounen\",\"Fondue Savoyarde\",\"Quiche Lorraine\"],\"c\":1,\"ok\":\"Correct! Judd mat Gaardebounen!\",\"no\":\"No. National dish = Judd mat Gaardebounen\",\"exp\":\"Judd mat Gaardebounen (smoked pork neck with broad beans) is the national dish!\"},{\"id\":9,\"type\":\"listen\",\"q\":\"Wéi vill Sproochen ginn zu Lëtzebuerg geschwat?\",\"hint\":\"How many official languages does Luxembourg have?\",\"audio\":\"Wéi vill Sproochen ginn zu Lëtzebuerg geschwat?\",\"o\":[\"Eng\",\"Zwou\",\"Dräi\",\"Véier\"],\"c\":2,\"ok\":\"Correct! Dräi — Lëtzebuergesch, Franséisch, Däitsch!\",\"no\":\"No. Dräi (three) official languages\",\"exp\":\"Luxembourg has 3 official languages: Luxembourgish, French and German.\"},{\"id\":10,\"type\":\"grammar\",\"q\":\"Which phrase means: I do not understand, can you repeat?\",\"hint\":\"Useful when you need clarification in the exam\",\"o\":[\"Ech verstinn net. Kënnt Dir dat widderhuelen?\",\"Ech wunnen net hei.\",\"Ech schwätzen net Lëtzebuergesch.\",\"Ech kommen net.\"],\"c\":0,\"ok\":\"Correct! Perfect phrase for the Sproochentest!\",\"no\":\"No. Say: Ech verstinn net. Kënnt Dir dat widderhuelen?\",\"exp\":\"This is your best friend in the Sproochentest — ask politely to repeat!\"}]");
+
+var EXAM_QUESTIONS=[
+{id:1,type:"listen",q:"Léon seet: «Moien! Wéi geet et?» Wat äntwerts du?",hint:"Léon greets you and asks how you are",audio:"Moien! Wéi geet et?",o:["Et geet mir gutt, merci!","Jo, ech sinn hei.","Äddi, Léon!","Ech sinn krank."],c:0,ok:"Correct! Et geet mir gutt, merci! — the standard reply",no:"No. Reply: Et geet mir gutt, merci!",exp:"Wéi geet et? = How are you? Reply: Et geet mir gutt, merci!"},
+{id:2,type:"vocab",q:"Wat bedeit 'D'Gemeng'?",hint:"A place for official business and registration",o:["The school","The hospital","The municipality office","The police"],c:2,ok:"Correct! D'Gemeng = municipality office",no:"No. D'Gemeng = the municipality",exp:"D'Gemeng is where you register your address and handle local government business."},
+{id:3,type:"listen",q:"Wéi seet ee 'Goodbye' op Lëtzebuergesch?",hint:"A common farewell in Luxembourg",audio:"Äddi! Bis geschwënn!",o:["Moien","Merci","Äddi","Wann ech gelift"],c:2,ok:"Correct! Äddi = Goodbye!",no:"No. Goodbye = Äddi [AH-dee]",exp:"Äddi is the typical Luxembourgish goodbye. Bis geschwënn = See you soon!"},
+{id:4,type:"grammar",q:"Complete the sentence: 'Ech ___ zu Lëtzebuerg.'",hint:"I [verb] in Luxembourg — about where you live",o:["ginn","wunnen","schwätzen","schaffen"],c:1,ok:"Correct! Wunnen = to live",no:"No. To live = wunnen",exp:"Wunnen = to live/reside. Essential verb for the Sproochentest!"},
+{id:5,type:"vocab",q:"'Den Transport zu Lëtzebuerg ass...'",hint:"A special fact about Luxembourg transport",o:["deier (expensive)","gratis (free)","nëmme fir Bierger","lues (slow)"],c:1,ok:"Correct! Public transport is FREE since 2020!",no:"No. Public transport = gratis (free)!",exp:"Since 2020 Luxembourg is the first country with fully free national public transport!"},
+{id:6,type:"listen",q:"Léon freet: «Wéi heeschs du?» Wat soe mir?",hint:"Léon is asking your name",audio:"Wéi heeschs du?",o:["Ech schwätzen Lëtzebuergesch.","Ech kommen aus Russland.","Ech heeschen Andrey.","Et geet mir gutt."],c:2,ok:"Correct! Ech heeschen Andrey.",no:"No. Reply: Ech heeschen [name]",exp:"Wéi heeschs du? = What is your name? Reply: Ech heeschen..."},
+{id:7,type:"grammar",q:"Choose the correct word: 'Ech ___ Lëtzebuergesch.'",hint:"I [verb] Luxembourgish",o:["iessen","schwätzen","wunnen","kommen"],c:1,ok:"Correct! Schwätzen = to speak",no:"No. To speak = schwätzen",exp:"Schwätzen = to speak. Ech schwätzen en bësschen Lëtzebuergesch = I speak a little Luxembourgish."},
+{id:8,type:"vocab",q:"Wat ass de Lëtzebuerger Nationalgeriicht?",hint:"The traditional national dish of Luxembourg",o:["Sauerkraut mat Wunscht","Judd mat Gaardebounen","Fondue Savoyarde","Quiche Lorraine"],c:1,ok:"Correct! Judd mat Gaardebounen!",no:"No. National dish = Judd mat Gaardebounen",exp:"Judd mat Gaardebounen (smoked pork neck with broad beans) is Luxembourg's national dish!"},
+{id:9,type:"listen",q:"Wéi vill Sproochen ginn zu Lëtzebuerg geschwat?",hint:"How many official languages does Luxembourg have?",audio:"Wéi vill Sproochen ginn zu Lëtzebuerg geschwat?",o:["Eng","Zwou","Dräi","Véier"],c:2,ok:"Correct! Dräi — Lëtzebuergesch, Franséisch, Däitsch!",no:"No. Dräi (three) official languages",exp:"Luxembourg has 3 official languages: Luxembourgish (national), French and German."},
+{id:10,type:"grammar",q:"Which phrase means 'I don't understand, can you repeat?'",hint:"Useful when you need clarification in the exam",o:["Ech verstinn net. Kënnt Dir dat widderhuelen?","Ech wunnen net hei.","Ech schwätzen net Lëtzebuergesch.","Ech kommen net."],c:0,ok:"Correct! Perfect phrase for the Sproochentest!",no:"No. Say: Ech verstinn net. Kënnt Dir dat widderhuelen?",exp:"This is your best friend in the Sproochentest — ask politely to repeat!"}
+];
+
+// STATE
+var curLesson = null;
+var curSpeed = 0.8;
+var done = [];
+var examStats = {passed:0, failed:0};
+var examState = {q:0, score:0};
+var deVoice = null;
+var recBlobs = {};
+var dlgStore = {}; // rid -> text
+
+try { done = JSON.parse(localStorage.getItem('lux77') || '[]'); } catch(e) {}
+try { examStats = JSON.parse(localStorage.getItem('lux77exam') || '{"passed":0,"failed":0}'); } catch(e) {}
+
+// SHOW PAGE
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('on'); });
+  var el = document.getElementById('pg-' + id);
+  if (el) el.classList.add('on');
+}
+function setNav(page) {
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('on'); });
+  var ids = {home:'nb-home',lesson:'nb-lesson',words:'nb-words',ex:'nb-ex',exam:'nb-exam',prog:'nb-prog'};
+  var btn = document.getElementById(ids[page]);
+  if (btn) btn.classList.add('on');
+}
+
+// NAV: handled via inline onclick on buttons
+
+
+
+
+
+
+
+
+// HOME
+function lgClick(e) {
+  var card = e.target.closest('.lc');
+  if (!card) return;
+  openLesson(parseInt(card.dataset.id));
+}
+function goHome() {
+  buildHome();
+  showPage('home');
+  setNav('home');
+}
+function buildHome() {
+  document.getElementById('h-pass').textContent = examStats.passed;
+  document.getElementById('h-fail').textContent = examStats.failed;
+  document.getElementById('tlv').textContent = 'A1 · 25 lessons';
+  var g = document.getElementById('lg');
+  g.innerHTML = '';
+  L.forEach(function(l) {
+    var isDone = done.indexOf(l.id) >= 0;
+    var div = document.createElement('div');
+    div.className = 'lc' + (l.type !== 'normal' ? ' ' + l.type : '') + (isDone ? ' done' : '');
+    div.dataset.id = l.id;
+    var tag = '';
+    if (l.type === 'f1') tag = '<span class="lc-tg f1">🏎️ F1</span>';
+    if (l.type === 'chess') tag = '<span class="lc-tg chess">♟️ Chess</span>';
+    div.innerHTML = (isDone ? '<div class="lc-ck">✅</div>' : '')
+      + '<div class="lc-lv">Lesson ' + l.id + ' · ' + l.level + '</div>'
+      + '<div class="lc-ic">' + l.icon + '</div>'
+      + '<div class="lc-nm">' + l.title + '</div>'
+      + '<div class="lc-sb">' + l.ru_title + '</div>'
+      + tag;
+    g.appendChild(div);
+  });
+}
+
+// OPEN LESSON
+function openLesson(id) {
+  curLesson = null;
+  for (var i = 0; i < L.length; i++) { if (L[i].id === id) { curLesson = L[i]; break; } }
+  if (!curLesson) return;
+  document.getElementById('l-title').textContent = curLesson.icon + ' ' + curLesson.title;
+  document.getElementById('tlv').textContent = curLesson.level + ' · L' + id;
+  document.getElementById('lc-done').style.display = 'none';
+  document.getElementById('tab-a').classList.add('on');
+  document.getElementById('tab-j').classList.remove('on');
+  buildDlg(curLesson.sd, 'sd');
+  showPage('lesson');
+  setNav('lesson');
+}
+function switchDlg(type) {
+  if (!curLesson) return;
+  if (type === 'sd') {
+    document.getElementById('tab-a').classList.add('on');
+    document.getElementById('tab-j').classList.remove('on');
+    buildDlg(curLesson.sd, 'sd');
+  } else {
+    document.getElementById('tab-j').classList.add('on');
+    document.getElementById('tab-a').classList.remove('on');
+    buildDlg(curLesson.jd, 'jd');
+  }
+}
+
+// BUILD DIALOG
+function buildDlg(dialogs, type) {
+  dlgStore = {};
+  var wrap = document.getElementById('dlgwrap');
+  wrap.innerHTML = '';
+  dialogs.forEach(function(d, i) {
+    var rid = 'r_' + type + '_' + i;
+    dlgStore[rid] = d.t;
+
+    var card = document.createElement('div');
+    card.className = 'dc';
+
+    var hd = document.createElement('div');
+    hd.className = 'dc-hd';
+    hd.innerHTML = '<div class="av ' + d.w + '">' + d.w + '</div><div class="dc-sp">' + d.n + '</div>';
+
+    var lb = document.createElement('div'); lb.className = 'dc-lb'; lb.textContent = d.t;
+    var ph = document.createElement('div'); ph.className = 'dc-ph'; ph.textContent = d.ph;
+    var en = document.createElement('div'); en.className = 'dc-en'; en.textContent = d.r;
+
+    var bt = document.createElement('div');
+    bt.className = 'dc-bt';
+
+    // Listen button
+    var bListen = document.createElement('button');
+    bListen.className = 'bp ' + d.w;
+    bListen.textContent = '▶ Listen';
+    bListen.dataset.rid = rid;
+    bListen.dataset.action = 'speak';
+    bt.appendChild(bListen);
+
+    // Speed buttons only for Léon
+    if (d.w === 'L') {
+      var b07 = document.createElement('button');
+      b07.className = 'bspd'; b07.textContent = '0.6×'; b07.dataset.spd = '0.6'; b07.dataset.rid = rid;
+      var b10 = document.createElement('button');
+      b10.className = 'bspd on'; b10.textContent = '0.8×'; b10.dataset.spd = '0.8'; b10.dataset.rid = rid;
+      var b12 = document.createElement('button');
+      b12.className = 'bspd'; b12.textContent = '1×'; b12.dataset.spd = '1.0'; b12.dataset.rid = rid;
+      bt.appendChild(b07); bt.appendChild(b10); bt.appendChild(b12);
+    }
+
+    // Mic button
+    var bMic = document.createElement('button');
+    bMic.className = 'bmic'; bMic.textContent = '🎤 I speak!'; bMic.dataset.rid = rid; bMic.dataset.action = 'mic';
+    bt.appendChild(bMic);
+
+    var ply = document.createElement('div');
+    ply.id = 'pl_' + rid;
+
+    card.appendChild(hd); card.appendChild(lb); card.appendChild(ph); card.appendChild(en);
+    card.appendChild(bt); card.appendChild(ply);
+    wrap.appendChild(card);
+  });
+
+  // Complete button
+  var complBtn = document.createElement('div');
+  complBtn.style.cssText = 'text-align:center;padding:12px 0';
+  var cb = document.createElement('button');
+  cb.style.cssText = 'background:var(--g);color:#fff;border:none;border-radius:20px;padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer';
+  cb.textContent = '✅ Lesson complete!';
+  cb.addEventListener('click', markDone);
+  complBtn.appendChild(cb);
+  wrap.appendChild(complBtn);
+
+  // Event delegation on wrap
+  wrap.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-action]');
+    if (!btn) {
+      // speed button?
+      var sb = e.target.closest('[data-spd]');
+      if (sb) {
+        var rid2 = sb.dataset.rid;
+        curSpeed = parseFloat(sb.dataset.spd);
+        wrap.querySelectorAll('[data-rid="' + rid2 + '"][data-spd]').forEach(function(b){ b.classList.remove('on'); });
+        sb.classList.add('on');
+      }
+      return;
+    }
+    var action = btn.getAttribute('data-action');
+    var rid = btn.getAttribute('data-rid');
+    if (action === 'speak') { spk(dlgStore[rid] || '', curSpeed); }
+    else if (action === 'mic') { handleMic(btn, rid); }
+  });
+}
+
+function markDone() {
+  if (!curLesson) return;
+  var id = curLesson.id;
+  if (done.indexOf(id) < 0) {
+    done.push(id);
+    try { localStorage.setItem('lux77', JSON.stringify(done)); } catch(e) {}
+  }
+  var el = document.getElementById('lc-done');
+  el.style.display = 'block';
+  el.scrollIntoView({behavior:'smooth'});
+}
+function nextLesson() {
+  if (!curLesson) return;
+  var next = null;
+  for (var i = 0; i < L.length; i++) { if (L[i].id === curLesson.id + 1) { next = L[i]; break; } }
+  if (next) openLesson(next.id); else goHome();
+}
+
+// WORDS
+function buildWords() {
+  if (!curLesson) return;
+  document.getElementById('w-title').textContent = curLesson.icon + ' ' + curLesson.title + ' — Words';
+  var g = document.getElementById('wg');
+  g.innerHTML = '';
+  curLesson.words.forEach(function(w, i) {
+    var div = document.createElement('div');
+    div.className = 'wc'; div.dataset.i = i;
+    div.innerHTML = '<div class="wc-ic">' + w.ic + '</div>'
+      + '<div class="wc-lb">' + w.cz + '</div>'
+      + '<div class="wc-ph">' + w.ph + '</div>'
+      + '<div class="wc-en">' + w.ru + '</div>';
+    g.appendChild(div);
+  });
+  g.onclick = function(e) {
+    var c = e.target.closest('.wc');
+    if (!c || !curLesson) return;
+    var w = curLesson.words[parseInt(c.dataset.i)];
+    if (w) spk(w.cz, 1.0);
+  };
+}
+
+// EXERCISES
+function buildExercises() {
+  if (!curLesson) return;
+  document.getElementById('ex-title').textContent = '✏️ ' + curLesson.title + ' — Exercises';
+  var wrap = document.getElementById('ew');
+  wrap.innerHTML = '';
+  curLesson.ex.forEach(function(ex, qi) {
+    var card = document.createElement('div'); card.className = 'ec';
+    var qn = document.createElement('div'); qn.className = 'ec-n'; qn.textContent = 'QUESTION ' + (qi+1) + ' OF ' + curLesson.ex.length;
+    var qq = document.createElement('div'); qq.className = 'ec-q'; qq.textContent = ex.q;
+    var opts = document.createElement('div'); opts.className = 'eopts';
+    var fb = document.createElement('div');
+    var labels = ['A','B','C','D'];
+    ex.o.forEach(function(o, ai) {
+      var b = document.createElement('button'); b.className = 'eopt'; b.textContent = labels[ai] + '. ' + o;
+      b.addEventListener('click', function() {
+        opts.querySelectorAll('.eopt').forEach(function(x){ x.classList.add('used'); });
+        var isOk = ai === ex.c;
+        b.classList.add(isOk ? 'ok' : 'no');
+        if (!isOk) opts.querySelectorAll('.eopt')[ex.c].classList.add('show-ok');
+        fb.innerHTML = '<div class="efb ' + (isOk?'ok':'no') + '">' + (isOk?'✅ ':'❌ ') + (isOk?ex.ok:ex.no) + '</div>'
+          + '<div class="eexp">💡 ' + ex.exp + '</div>';
+        spk(isOk ? 'Correct!' : 'Not quite.', 1.0);
+      });
+      opts.appendChild(b);
+    });
+    card.appendChild(qn); card.appendChild(qq); card.appendChild(opts); card.appendChild(fb);
+    wrap.appendChild(card);
+  });
+}
+
+// EXAM
+function startExam() {
+  examState = {q:0, score:0};
+  renderExamQ();
+}
+function renderExamQ() {
+  var wrap = document.getElementById('exam-wrap');
+  if (examState.q >= EXAM_QUESTIONS.length) { renderExamResult(); return; }
+  var eq = EXAM_QUESTIONS[examState.q];
+  var pct = Math.round(examState.q / EXAM_QUESTIONS.length * 100);
+
+  wrap.innerHTML = '';
+
+  var bar = document.createElement('div'); bar.className = 'epbar';
+  var fill = document.createElement('div'); fill.className = 'epfill'; fill.style.width = pct + '%';
+  bar.appendChild(fill); wrap.appendChild(bar);
+
+  var card = document.createElement('div'); card.className = 'eqc';
+  var qt = document.createElement('div'); qt.className = 'eqt ' + eq.type; qt.textContent = eq.type.toUpperCase() + ' · Question ' + (examState.q+1) + ' of ' + EXAM_QUESTIONS.length;
+  var qq = document.createElement('div'); qq.className = 'eqq'; qq.textContent = eq.q;
+  var qh = document.createElement('div'); qh.className = 'eqh'; qh.textContent = '💡 ' + eq.hint;
+  card.appendChild(qt); card.appendChild(qq); card.appendChild(qh);
+
+  if (eq.audio) {
+    var ab = document.createElement('button'); ab.className = 'eqab'; ab.textContent = '🔊 Listen to question';
+    (function(txt){ ab.addEventListener('click', function(){ spk(txt, 0.9); }); })(eq.audio);
+    card.appendChild(ab);
+  }
+
+  var opts = document.createElement('div'); opts.className = 'eopts';
+  var fb = document.createElement('div');
+  var labels = ['A','B','C','D'];
+  eq.o.forEach(function(o, ai) {
+    var b = document.createElement('button'); b.className = 'eopt'; b.textContent = labels[ai] + '. ' + o;
+    b.addEventListener('click', function() {
+      opts.querySelectorAll('.eopt').forEach(function(x){ x.classList.add('used'); });
+      var isOk = ai === eq.c;
+      b.classList.add(isOk ? 'ok' : 'no');
+      if (!isOk) opts.querySelectorAll('.eopt')[eq.c].classList.add('show-ok');
+      if (isOk) examState.score++;
+      fb.innerHTML = '<div class="efb ' + (isOk?'ok':'no') + '">' + (isOk?'✅ ':'❌ ') + (isOk?eq.ok:eq.no) + '</div>'
+        + '<div class="eexp">' + eq.exp + '</div>';
+      var nb = document.createElement('button');
+      nb.style.cssText = 'background:var(--g);color:#fff;border:none;border-radius:20px;padding:9px 22px;font-size:13px;font-weight:700;cursor:pointer;display:block;margin:10px auto 0';
+      nb.textContent = 'Next →';
+      nb.addEventListener('click', function(){ examState.q++; renderExamQ(); });
+      fb.appendChild(nb);
+      spk(isOk ? 'Correct!' : 'Not quite.', 1.0);
+    });
+    opts.appendChild(b);
+  });
+  card.appendChild(opts); card.appendChild(fb);
+  wrap.appendChild(card);
+}
+function renderExamResult() {
+  var pct = Math.round(examState.score / EXAM_QUESTIONS.length * 100);
+  var passed = pct >= 70;
+  if (passed) examStats.passed++; else examStats.failed++;
+  try { localStorage.setItem('lux77exam', JSON.stringify(examStats)); } catch(e) {}
+  var wrap = document.getElementById('exam-wrap');
+  wrap.innerHTML = '';
+  var res = document.createElement('div'); res.className = 'eres';
+  res.innerHTML = '<div class="eres-em">' + (passed?'🎉':'💪') + '</div>'
+    + '<h2>' + (passed?'Congratulations!':'Keep going!') + '</h2>'
+    + '<div class="sc ' + (passed?'p':'f') + '">' + examState.score + '/' + EXAM_QUESTIONS.length + '</div>'
+    + '<p>' + (passed ? 'You passed! ' + pct + '% — above 70%. Ready for Sproochentest!' : 'You got ' + pct + '%. Need 70% to pass. Review lessons and try again!') + '</p>'
+    + '<div class="per" style="margin-bottom:14px">'
+    + '<div class="pei"><div class="en p">' + examStats.passed + '</div><div class="el">Passed ✅</div></div>'
+    + '<div class="pei"><div class="en f">' + examStats.failed + '</div><div class="el">Failed ❌</div></div>'
+    + '</div>';
+  var rb = document.createElement('button'); rb.className = 'btn-try'; rb.textContent = 'Try again!';
+  rb.addEventListener('click', startExam);
+  res.appendChild(rb);
+  wrap.appendChild(res);
+}
+
+// PROGRESS
+function buildProgress() {
+  document.getElementById('pr-done').textContent = done.length;
+  document.getElementById('pr-words').textContent = done.length * 8;
+  document.getElementById('pr-pass').textContent = examStats.passed;
+  document.getElementById('pr-fail').textContent = examStats.failed;
+  var tot = examStats.passed + examStats.failed;
+  document.getElementById('pr-pct').textContent = tot > 0 ? Math.round(examStats.passed/tot*100) + '%' : '—';
+  var list = document.getElementById('pr-list'); list.innerHTML = '';
+  L.forEach(function(l) {
+    var isDone = done.indexOf(l.id) >= 0;
+    var isCur = curLesson && curLesson.id === l.id;
+    var div = document.createElement('div'); div.className = 'pli';
+    div.innerHTML = '<div><div class="pli-t">' + l.icon + ' ' + l.title + '</div><div class="pli-s">' + l.ru_title + '</div></div>'
+      + '<span class="bdg ' + (isDone?'done':isCur?'now':'soon') + '">' + (isDone?'Done ✅':isCur?'Now':'Soon') + '</span>';
+    list.appendChild(div);
+  });
+}
+
+// TTS
+function spk(txt, rate) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(txt);
+  u.lang = 'de-DE'; u.rate = rate || 0.8;
+  if (deVoice) u.voice = deVoice;
+  window.speechSynthesis.speak(u);
+}
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = function() {
+    var vs = window.speechSynthesis.getVoices();
+    deVoice = vs.find(function(v){ return v.lang === 'de-DE' || v.lang.startsWith('de'); }) || null;
+  };
+}
+
+// MIC
+function handleMic(btn, rid) {
+  if (!navigator.mediaDevices) { alert('Microphone not available.'); return; }
+  if (btn._recording) { if (btn._stopRec) btn._stopRec(); return; }
+  btn._recording = true;
+  var origText = btn.textContent;
+  btn.textContent = '⏹ Stop'; btn.style.background = '#FAEBEC';
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream) {
+    var mr = new MediaRecorder(stream), chunks = [];
+    mr.ondataavailable = function(e){ if(e.data.size>0) chunks.push(e.data); };
+    mr.onstop = function() {
+      stream.getTracks().forEach(function(t){ t.stop(); });
+      recBlobs[rid] = new Blob(chunks, {type:'audio/webm'});
+      btn._recording = false; btn.textContent = origText; btn.style.background = '';
+      showPlayer(rid, dlgStore[rid] || '');
+    };
+    mr.start();
+    btn._stopRec = function(){ if(mr.state==='recording') mr.stop(); };
+    setTimeout(btn._stopRec, 10000);
+  }).catch(function(){ btn._recording = false; btn.textContent = origText; btn.style.background = ''; });
+}
+function showPlayer(rid, modelTxt) {
+  var el = document.getElementById('pl_' + rid);
+  if (!el) return;
+  var bars = ''; for(var i=0;i<10;i++) bars += '<span style="animation-delay:' + (i*0.08) + 's"></span>';
+  el.innerHTML = '';
+  var box = document.createElement('div'); box.className = 'sply';
+  box.innerHTML = '<div class="sply-l">🎧 My recording:</div>'
+    + '<div class="sply-r"><button class="spl-p" data-play>▶</button><div class="spl-w">' + bars + '</div></div>'
+    + '<div class="sply-c"><button class="cmp-l" data-leon>▶ Léon</button><button class="cmp-m" data-me>▶ Me</button><span class="cmp-h">Compare!</span></div>';
+  box.querySelector('[data-play]').addEventListener('click', function(){ playRec(rid); });
+  box.querySelector('[data-me]').addEventListener('click', function(){ playRec(rid); });
+  box.querySelector('[data-leon]').addEventListener('click', function(){ spk(modelTxt, curSpeed); });
+  el.appendChild(box);
+}
+function playRec(rid) {
+  var blob = recBlobs[rid];
+  if (!blob) return;
+  var url = URL.createObjectURL(blob);
+  new Audio(url).play();
+}
+
+// VOICE MODAL
+var vmShown = false;
+try { vmShown = !!localStorage.getItem('lux77voice'); } catch(e) {}
+if (!vmShown) {
+  setTimeout(function() {
+    document.getElementById('vm').classList.add('show');
+    setTimeout(function(){ document.getElementById('vm').classList.remove('show'); }, 8000);
+  }, 3000);
+}
+
+
+
+// INIT
+goHome();
+</script>
+</body>
+</html>
