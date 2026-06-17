@@ -1,0 +1,450 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{max-width:380px;margin:0 auto;padding:0 0 2rem}
+.cover{background:#8B1A1E;border-radius:16px;padding:2rem 1.5rem 1.5rem;margin-bottom:1.5rem;color:#fff;position:relative;overflow:hidden}
+.cover::before{content:'🇱🇺';position:absolute;right:-10px;top:-10px;font-size:100px;opacity:.07;line-height:1}
+.cover-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.7;margin-bottom:.5rem}
+.cover-title{font-size:24px;font-weight:800;line-height:1.15;margin-bottom:.35rem}
+.cover-title span{color:#FFD97A}
+.cover-tag{font-size:13px;opacity:.85;margin-bottom:1.25rem;line-height:1.5}
+.cover-goal{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:10px 13px;margin-bottom:1rem}
+.cover-goal-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.65;margin-bottom:4px}
+.cover-goal-text{font-size:13px;font-weight:700;line-height:1.4}
+.cover-badges{display:flex;gap:7px;flex-wrap:wrap}
+.badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:#fff}
+.badge.gold{background:rgba(255,217,122,.2);border-color:rgba(255,217,122,.5);color:#FFD97A}
+.section{margin-bottom:1.5rem}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:.75rem;padding:0 .1rem}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.card-body{padding:13px 15px}
+.card-body h3{font-size:14px;font-weight:600;color:var(--color-text-primary);margin-bottom:6px}
+.card-body p{font-size:13px;color:var(--color-text-secondary);line-height:1.65;margin-bottom:8px}
+.card-body p:last-child{margin-bottom:0}
+.hl-card{border-left:3px solid #C4282C;border-radius:0 12px 12px 0}
+
+/* THREE BLOCKS — the big visual */
+.blocks-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.block-card{border-radius:12px;padding:14px 15px;position:relative;overflow:hidden}
+.block-card::after{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:48px;opacity:.08;line-height:1}
+.block-1{background:#C4282C;color:#fff}
+.block-1::after{content:'A1'}
+.block-2{background:#1D6EA8;color:#fff}
+.block-2::after{content:'A2'}
+.block-3{background:#1D9E75;color:#fff}
+.block-3::after{content:'B1'}
+.block-eyebrow{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.7;margin-bottom:5px}
+.block-title{font-size:16px;font-weight:800;margin-bottom:4px}
+.block-sub{font-size:12px;opacity:.85;line-height:1.5;margin-bottom:8px}
+.block-pills{display:flex;gap:5px;flex-wrap:wrap}
+.block-pill{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:600;color:#fff}
+.block-pill.soon{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);opacity:.75}
+.block-status{position:absolute;top:12px;right:14px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
+.bs-live{background:rgba(255,255,255,.25);color:#fff}
+.bs-soon{background:rgba(255,255,255,.12);color:rgba(255,255,255,.7)}
+.connector{display:flex;justify-content:center;margin:-2px 0}
+.conn-line{width:2px;height:16px;background:var(--color-border-tertiary);border-radius:1px}
+
+/* guarantee box */
+.guarantee{background:var(--color-background-primary);border:1.5px solid #1D9E75;border-radius:12px;padding:14px 15px;margin-bottom:10px}
+.guarantee-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.guarantee-icon{font-size:24px}
+.guarantee-title{font-size:14px;font-weight:700;color:var(--color-text-primary)}
+.guarantee-sub{font-size:11px;color:var(--color-text-secondary)}
+.guarantee p{font-size:13px;color:var(--color-text-secondary);line-height:1.65;margin-bottom:6px}
+.guarantee p:last-child{margin-bottom:0}
+.guarantee p strong{color:var(--color-text-primary);font-weight:600}
+.guarantee-stamp{background:#E1F5EE;border-radius:8px;padding:9px 11px;margin-top:10px}
+.guarantee-stamp p{font-size:12px;color:#0a4a35;line-height:1.55;margin:0;font-weight:500}
+
+.citizen-path{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px 15px;margin-bottom:10px}
+.path-title{font-size:13px;font-weight:700;color:var(--color-text-primary);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.path-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.path-step:last-child{margin-bottom:0}
+.ps-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
+.ps-red{background:#FAEBEC;color:#C4282C}
+.ps-blue{background:#E6F1FB;color:#185FA5}
+.ps-green-d{background:#E1F5EE;color:#0F6E56}
+.ps-amber{background:#FAEEDA;color:#7A4500}
+.ps-gold{background:#FFF8E1;color:#7A4500}
+.ps-text{font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+.ps-text strong{color:var(--color-text-primary);font-weight:600}
+.ps-connector{width:2px;height:10px;background:var(--color-border-tertiary);margin-left:13px;margin-bottom:2px}
+
+.exam-real{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.exam-real-header{background:#C4282C;padding:10px 14px;color:#fff}
+.exam-real-header h3{font-size:13px;font-weight:700;margin-bottom:2px}
+.exam-real-header p{font-size:11px;opacity:.85}
+.exam-part{padding:12px 14px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.exam-part:last-child{border-bottom:none}
+.exam-part-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.exam-part-title{font-size:13px;font-weight:700;color:var(--color-text-primary)}
+.level-badge{border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700}
+.lb-a2{background:#FAEEDA;color:#7A4500}
+.lb-b1{background:#EEEDFE;color:#3C3489}
+.exam-part p{font-size:12px;color:var(--color-text-secondary);line-height:1.55}
+.exam-part ul{padding-left:16px;margin-top:4px}
+.exam-part ul li{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.honest-box{background:#FAEEDA;border-left:3px solid #EF9F27;border-radius:0 10px 10px 0;padding:10px 13px;margin-top:8px}
+.honest-box p{font-size:12px;color:#5A3000;line-height:1.55;margin:0}
+.success-box{background:#E1F5EE;border-left:3px solid #1D9E75;border-radius:0 10px 10px 0;padding:10px 13px;margin-top:8px}
+.success-box p{font-size:12px;color:#0a4a35;line-height:1.55;margin:0}
+.tip-info{background:var(--color-background-info);border-left:3px solid #1D6EA8;border-radius:0 8px 8px 0;padding:9px 12px}
+.tip-info p{font-size:12px;color:var(--color-text-info);line-height:1.55;margin:0}
+.feature-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.feature-row:last-child{border-bottom:none;padding-bottom:0}
+.fi{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.fi-red{background:#FAEBEC}
+.fi-orange{background:#FAECE7}
+.fi-purple{background:#EEEDFE}
+.fi-blue{background:#E6F1FB}
+.fi-green{background:#E1F5EE}
+.fi-amber{background:#FAEEDA}
+.feature-info h4{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:3px}
+.feature-info p{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.char-row{display:flex;gap:8px}
+.char-card{flex:1;border-radius:10px;padding:10px 8px;text-align:center;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.char-av{width:40px;height:40px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff}
+.av-l{background:linear-gradient(135deg,#C4282C,#8B1A1E)}
+.av-a{background:linear-gradient(135deg,#E8722A,#B84E18)}
+.av-j{background:linear-gradient(135deg,#7F77DD,#534AB7)}
+.char-nm{font-size:12px;font-weight:700;color:var(--color-text-primary)}
+.char-ds{font-size:10px;color:var(--color-text-secondary);margin-top:2px}
+.screen-mock{background:#F4F6F8;padding:10px 10px 6px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.mock-topbar{background:#C4282C;border-radius:8px;height:30px;display:flex;align-items:center;padding:0 10px;gap:8px;margin-bottom:6px}
+.mock-topbar-title{color:#fff;font-size:11px;font-weight:700;flex:1}
+.mock-topbar-lv{background:rgba(255,255,255,.2);border-radius:10px;padding:2px 7px;font-size:9px;color:#fff}
+.mock-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
+.mock-lcard{background:#fff;border-radius:8px;border:1px solid #E0E0E0;padding:8px}
+.mock-lcard.f1{border-left:3px solid #EF9F27}
+.mock-lcard.chess{border-left:3px solid #7F77DD}
+.mock-lcard.done{background:#E8F8F0;border-color:#1D9E75}
+.mock-lcard-lv{color:#999;font-size:8px;font-weight:700;margin-bottom:2px}
+.mock-lcard-ic{font-size:16px;margin:2px 0}
+.mock-lcard-nm{font-size:9px;font-weight:700;color:#1A1A1A;line-height:1.2}
+.mock-lcard-done{float:right;font-size:10px}
+.mock-nav{background:#fff;border-top:1px solid #E0E0E0;border-radius:0 0 8px 8px;display:flex;height:34px}
+.mock-nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.mock-nb-i{font-size:11px}
+.mock-nb-l{font-size:7px;color:#999;font-weight:600}
+.mock-nb.on .mock-nb-l{color:#C4282C}
+.tab-mock{display:flex;background:#F4F6F8;border-radius:20px;padding:3px;gap:3px;margin-bottom:8px}
+.tm{flex:1;border-radius:16px;padding:5px;font-size:10px;font-weight:600;text-align:center;color:#999}
+.tm.on{background:#fff;color:#1A1A1A}
+.mock-dlg{background:#fff;border-radius:8px;border:1px solid #E0E0E0;padding:9px}
+.md-hd{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.md-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff}
+.md-sp{font-size:9px;font-weight:700;color:#999}
+.md-lb{font-size:11px;font-weight:700;color:#1A1A1A;margin-bottom:1px}
+.md-ph{font-size:9px;color:#999;font-style:italic;margin-bottom:1px}
+.md-en{font-size:9px;color:#888;margin-bottom:5px}
+.md-btns{display:flex;gap:4px;flex-wrap:wrap}
+.mbtn{border:none;border-radius:12px;padding:3px 8px;font-size:9px;font-weight:700}
+.mbtn-red{background:#FAEBEC;color:#8B1A1E}
+.mbtn-gray{background:#F4F6F8;color:#666;border:1px solid #E0E0E0}
+.step-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.step-row:last-child{margin-bottom:0}
+.step-num{width:22px;height:22px;border-radius:50%;background:#C4282C;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+.step-text strong{color:var(--color-text-primary);font-weight:600}
+.stat-row{display:flex;gap:8px}
+.stat-card{flex:1;background:var(--color-background-secondary);border-radius:8px;padding:10px;text-align:center}
+.stat-n{font-size:20px;font-weight:700;color:#C4282C}
+.stat-n.green{color:#1D9E75}
+.stat-l{font-size:10px;color:var(--color-text-secondary);margin-top:2px;line-height:1.3}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.pill{border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600}
+.pill-red{background:#FAEBEC;color:#8B1A1E}
+.pill-amber{background:#FAEEDA;color:#7A4500}
+.pill-purple{background:#EEEDFE;color:#3C3489}
+.pill-green{background:#E1F5EE;color:#0F6E56}
+.pill-blue{background:#E6F1FB;color:#185FA5}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:1rem 0}
+.study-plan{display:flex;flex-direction:column;gap:6px}
+.sp-row{display:flex;gap:8px;align-items:center;background:var(--color-background-secondary);border-radius:8px;padding:8px 10px}
+.sp-day{font-size:10px;font-weight:700;color:var(--color-text-secondary);min-width:40px}
+.sp-desc{font-size:12px;color:var(--color-text-primary);font-weight:500}
+.sp-tag{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.footer-card{background:#8B1A1E;border-radius:12px;padding:18px 16px;color:#fff;text-align:center}
+.footer-flag{font-size:40px;margin-bottom:8px}
+.footer-title{font-size:17px;font-weight:800;margin-bottom:6px}
+.footer-sub{font-size:12px;opacity:.82;line-height:1.65;margin-bottom:14px}
+.footer-badges{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
+.footer-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:#fff}
+.footer-badge.gold{background:rgba(255,217,122,.2);border-color:rgba(255,217,122,.4);color:#FFD97A}
+</style>
+
+<div class="wrap">
+
+<div class="cover">
+  <div class="cover-eyebrow">ОПЯТЬ 25! ® — Languages for Life</div>
+  <div class="cover-title">Lëtzebuergesch<br><span>Snell!</span></div>
+  <div class="cover-tag">The complete 3-level path to Luxembourg citizenship —<br>from zero to Sproochentest-ready</div>
+  <div class="cover-goal">
+    <div class="cover-goal-label">Course outcome</div>
+    <div class="cover-goal-text">🏅 Master all 3 levels → Pass the Sproochentest → Luxembourg Citizenship 🇱🇺</div>
+  </div>
+  <div class="cover-badges">
+    <span class="badge gold">77 lessons · A1 + A2 + B1</span>
+    <span class="badge">📱 Android / iPhone</span>
+    <span class="badge">🎤 Voice practice</span>
+    <span class="badge">📝 Sproochentest aligned</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">The complete course — three levels</div>
+
+  <div class="blocks-wrap">
+    <div class="block-card block-1">
+      <span class="block-status bs-live">✅ Available now</span>
+      <div class="block-eyebrow">Block 1</div>
+      <div class="block-title">Level A1 — Foundation</div>
+      <div class="block-sub">25 lessons covering essential vocabulary, greetings, daily life, transport, health, family, work and numbers. Includes special F1 🏎️ and Chess ♟️ lessons.</div>
+      <div class="block-pills">
+        <span class="block-pill">25 lessons</span>
+        <span class="block-pill">200 words</span>
+        <span class="block-pill">50 exercises</span>
+        <span class="block-pill">Model exam</span>
+      </div>
+    </div>
+
+    <div class="connector"><div class="conn-line"></div></div>
+
+    <div class="block-card block-2">
+      <span class="block-status bs-soon">🔜 Coming soon</span>
+      <div class="block-eyebrow">Block 2</div>
+      <div class="block-title">Level A2 — Confident Speaker</div>
+      <div class="block-sub">25 lessons at exam speaking level. Describing photos, expressing opinions, extended conversations on work, culture, civic life and Luxembourg society.</div>
+      <div class="block-pills">
+        <span class="block-pill soon">25 lessons</span>
+        <span class="block-pill soon">Photo descriptions</span>
+        <span class="block-pill soon">Opinion phrases</span>
+        <span class="block-pill soon">Exam topics</span>
+      </div>
+    </div>
+
+    <div class="connector"><div class="conn-line"></div></div>
+
+    <div class="block-card block-3">
+      <span class="block-status bs-soon">🔜 Coming soon</span>
+      <div class="block-eyebrow">Block 3</div>
+      <div class="block-title">Level B1 — Exam Ready</div>
+      <div class="block-sub">27 lessons targeting B1 listening comprehension. News items, formal conversations, presentations — the exact formats used in the Sproochentest listening test.</div>
+      <div class="block-pills">
+        <span class="block-pill soon">27 lessons</span>
+        <span class="block-pill soon">Audio comprehension</span>
+        <span class="block-pill soon">News & dialogue</span>
+        <span class="block-pill soon">Full mock test</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">What full course mastery delivers</div>
+  <div class="guarantee">
+    <div class="guarantee-head">
+      <div class="guarantee-icon">🎯</div>
+      <div>
+        <div class="guarantee-title">From this course to your passport</div>
+        <div class="guarantee-sub">What mastering all 3 levels gives you</div>
+      </div>
+    </div>
+    <p>The Sproochentest requires <strong>A2 oral expression</strong> and <strong>B1 listening comprehension</strong>. This course is structured to cover both — completely and systematically.</p>
+    <p>Students who fully master all three levels will have <strong>active command of all vocabulary and conversational situations</strong> that appear in the official Sproochentest, as administered by the Institut national des langues Luxembourg (INLL).</p>
+    <p>The course covers <strong>100% of the official exam topics</strong>: self-introduction, family, daily routine, work, housing, health, transport, Luxembourg society and civic life.</p>
+    <div class="guarantee-stamp">
+      <p>✅ Full mastery of all 77 lessons provides the solid language foundation that is both necessary and sufficient to pass the Sproochentest and qualify for Luxembourg citizenship.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">The citizenship roadmap</div>
+  <div class="citizen-path">
+    <div class="path-title">🗺️ Your complete journey</div>
+    <div class="path-step">
+      <div class="ps-dot ps-red">A1</div>
+      <div class="ps-text"><strong>Master Block 1</strong> (25 lessons) — build your foundation: vocabulary, pronunciation, basic dialogues</div>
+    </div>
+    <div class="ps-connector"></div>
+    <div class="path-step">
+      <div class="ps-dot ps-blue">A2</div>
+      <div class="ps-text"><strong>Master Block 2</strong> (25 lessons) — reach speaking exam level: describe, explain, give opinions</div>
+    </div>
+    <div class="ps-connector"></div>
+    <div class="path-step">
+      <div class="ps-dot ps-green-d">B1</div>
+      <div class="ps-text"><strong>Master Block 3</strong> (27 lessons) — reach listening exam level: understand news, conversations, presentations</div>
+    </div>
+    <div class="ps-connector"></div>
+    <div class="path-step">
+      <div class="ps-dot ps-amber">📋</div>
+      <div class="ps-text"><strong>Register at INLL</strong> (inll.lu) for the Sproochentest — fee €75. Complete the free «Vivre ensemble» civic course (24h)</div>
+    </div>
+    <div class="ps-connector"></div>
+    <div class="path-step">
+      <div class="ps-dot" style="background:#FFD700;color:#7A4500">🏅</div>
+      <div class="ps-text"><strong>Pass the Sproochentest</strong> → submit citizenship application → receive your Luxembourg passport 🇱🇺</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">What the Sproochentest actually tests</div>
+  <div class="exam-real">
+    <div class="exam-real-header">
+      <h3>Sproochentest — Official Format (INLL)</h3>
+      <p>Institut national des langues Luxembourg</p>
+    </div>
+    <div class="exam-part">
+      <div class="exam-part-head">
+        <div class="exam-part-title">Part 1 — Speaking</div>
+        <span class="level-badge lb-a2">A2 ← Block 2</span>
+      </div>
+      <p>Oral interview with an examiner. You choose one of two topics, then describe a photo. Topics: self-introduction, family, daily routine, work, hobbies, housing, health, transport.</p>
+      <div class="honest-box">
+        <p>⚠️ The exam is <strong>100% oral</strong> — no reading, no writing. Block 2 of this course is built entirely around these speaking situations.</p>
+      </div>
+    </div>
+    <div class="exam-part">
+      <div class="exam-part-head">
+        <div class="exam-part-title">Part 2 — Listening</div>
+        <span class="level-badge lb-b1">B1 ← Block 3</span>
+      </div>
+      <p>Three audio recordings (~25 min): a news item, a conversation, a presentation. Multiple-choice comprehension questions.</p>
+      <div class="success-box">
+        <p>✅ Block 3 of this course trains precisely these three listening formats — with the vocabulary and topic range of the official exam.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">The three characters</div>
+  <div class="card">
+    <div class="card-body">
+      <div class="char-row">
+        <div class="char-card">
+          <div class="char-av av-l">L</div>
+          <div class="char-nm">Léon</div>
+          <div class="char-ds">Native speaker — your model</div>
+        </div>
+        <div class="char-card">
+          <div class="char-av av-a">A</div>
+          <div class="char-nm">Andrey</div>
+          <div class="char-ds">You — where you start</div>
+        </div>
+        <div class="char-card">
+          <div class="char-av av-j">J</div>
+          <div class="char-nm">John</div>
+          <div class="char-ds">A2 — your exam target</div>
+        </div>
+      </div>
+      <div class="tip-info" style="margin-top:10px">
+        <p>💡 Every lesson has two dialogue tracks. <strong>Andrey's track</strong> is where you are now. <strong>John's track</strong> shows you the A2 speaking level the Sproochentest requires. Listen to both, every session.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">How to use the app</div>
+  <div class="card">
+    <div class="screen-mock">
+      <div class="mock-topbar">
+        <span class="mock-topbar-title">🇱🇺 Lëtzebuergesch Snell!</span>
+        <span class="mock-topbar-lv">A1 · 25 lessons</span>
+      </div>
+      <div class="mock-grid">
+        <div class="mock-lcard done"><div class="mock-lcard-done">✅</div><div class="mock-lcard-lv">Lesson 1 · A1</div><div class="mock-lcard-ic">🔤</div><div class="mock-lcard-nm">Alfabet a kleng</div></div>
+        <div class="mock-lcard f1"><div class="mock-lcard-lv">Lesson 8 · A1</div><div class="mock-lcard-ic">🏎️</div><div class="mock-lcard-nm">F1: Am Bistro</div></div>
+        <div class="mock-lcard chess"><div class="mock-lcard-lv">Lesson 11 · A1</div><div class="mock-lcard-ic">♟️</div><div class="mock-lcard-nm">Schachclub Lëtzebuerg</div></div>
+        <div class="mock-lcard"><div class="mock-lcard-lv">Lesson 15 · A1</div><div class="mock-lcard-ic">🗣️</div><div class="mock-lcard-nm">Sprooch zu Lëtzebuerg</div></div>
+      </div>
+      <div class="mock-nav">
+        <div class="mock-nb on"><div class="mock-nb-i">🏠</div><div class="mock-nb-l">Lessons</div></div>
+        <div class="mock-nb"><div class="mock-nb-i">💬</div><div class="mock-nb-l">Dialog</div></div>
+        <div class="mock-nb"><div class="mock-nb-i">📖</div><div class="mock-nb-l">Words</div></div>
+        <div class="mock-nb"><div class="mock-nb-i">✏️</div><div class="mock-nb-l">Exercises</div></div>
+        <div class="mock-nb"><div class="mock-nb-i">📝</div><div class="mock-nb-l">Exam</div></div>
+        <div class="mock-nb"><div class="mock-nb-i">📊</div><div class="mock-nb-l">Progress</div></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>🏠 Lessons — tap any card to start</h3>
+      <p>All lessons at a glance. Colour-coded: yellow border = F1 lesson, purple border = Chess, green = completed.</p>
+      <div class="divider"></div>
+      <h3>💬 Dialog — the core of the app</h3>
+      <div class="feature-row">
+        <div class="fi fi-red">▶</div>
+        <div class="feature-info"><h4>Listen</h4><p>Hear each line via TTS. German de-DE voice — the closest available to Luxembourgish.</p></div>
+      </div>
+      <div class="feature-row">
+        <div class="fi fi-amber">🐢</div>
+        <div class="feature-info"><h4>0.7× — slow speed</h4><p>Slows speech 30% for tricky words. Use until comfortable, then switch to 1×.</p></div>
+      </div>
+      <div class="feature-row" style="border-bottom:none">
+        <div class="fi fi-purple">🎤</div>
+        <div class="feature-info"><h4>I speak! — voice recording</h4><p>Record yourself (up to 10s), then compare with <strong>▶ Léon</strong> and <strong>▶ Me</strong>. The single most important feature for passing the speaking exam.</p></div>
+      </div>
+      <div class="tip-info" style="margin-top:8px">
+        <p>💡 The Sproochentest speaking exam is a live conversation. Use 🎤 on every lesson — this is your daily oral exam simulation.</p>
+      </div>
+      <div class="divider"></div>
+      <h3>📖 Words · ✏️ Exercises · 📊 Progress</h3>
+      <p><strong>Words:</strong> 8 vocabulary cards per lesson — tap to hear pronunciation.<br>
+      <strong>Exercises:</strong> 2 questions per lesson, instant feedback.<br>
+      <strong>Progress:</strong> tracks lessons completed, words learned, exam history. Saved on your device.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Recommended daily plan</div>
+  <div class="card">
+    <div class="card-body">
+      <p style="margin-bottom:10px">One lesson per day = 25 days per block = 77 days to full exam readiness.</p>
+      <div class="study-plan">
+        <div class="sp-row"><span class="sp-day">5 min</span><span class="sp-desc">Words — tap all 8 cards aloud</span><span class="sp-tag pill-green pill">Vocab</span></div>
+        <div class="sp-row"><span class="sp-day">10 min</span><span class="sp-desc">Dialog Andrey — listen, repeat each line</span><span class="sp-tag pill-red pill">Speaking</span></div>
+        <div class="sp-row"><span class="sp-day">5 min</span><span class="sp-desc">Record 2–3 lines with 🎤, compare</span><span class="sp-tag pill-purple pill">Pronunciation</span></div>
+        <div class="sp-row"><span class="sp-day">5 min</span><span class="sp-desc">Dialog John A2 — listen, absorb</span><span class="sp-tag pill-blue pill">Listening</span></div>
+        <div class="sp-row"><span class="sp-day">3 min</span><span class="sp-desc">Exercises — 2 questions</span><span class="sp-tag pill-amber pill">Test</span></div>
+      </div>
+      <div class="tip-info" style="margin-top:10px">
+        <p>💡 28 minutes a day. Consistent daily practice beats 3-hour weekend sessions. The Sproochentest rewards habit over intensity.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Installing on Android</div>
+  <div class="card">
+    <div class="card-body">
+      <h3>Add to home screen</h3>
+      <div class="step-row"><div class="step-num">1</div><div class="step-text">Open <strong>index.html</strong> in <strong>Chrome</strong> on your Android phone</div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-text">Tap <strong>⋮</strong> menu → <strong>"Add to Home screen"</strong></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-text">Tap <strong>"Add"</strong> — the 🇱🇺 icon appears on your home screen</div></div>
+      <div class="step-row"><div class="step-num">4</div><div class="step-text">Opens full-screen, like a native app. iPhone: Safari → Share → "Add to Home Screen"</div></div>
+      <div class="divider"></div>
+      <h3>Voice not working?</h3>
+      <p>Go to <strong>Settings → Accessibility → Text-to-Speech</strong> → install the <strong>Deutsch (Deutschland)</strong> language pack for Google TTS.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer-card">
+  <div class="footer-flag">🏅</div>
+  <div class="footer-title">Vill Glück — Good luck!</div>
+  <div class="footer-sub">77 lessons. Three levels. One goal.<br>Full mastery of this course provides the complete language foundation — necessary and sufficient — to pass the Sproochentest and hold a Luxembourg passport.</div>
+  <div class="footer-badges">
+    <span class="footer-badge gold">Block 1 · A1 ✅ Now</span>
+    <span class="footer-badge">Block 2 · A2 🔜</span>
+    <span class="footer-badge">Block 3 · B1 🔜</span>
+  </div>
+</div>
+
+</div>
